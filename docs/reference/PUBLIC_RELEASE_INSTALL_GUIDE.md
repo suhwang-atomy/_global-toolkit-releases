@@ -22,13 +22,13 @@ Current release:
 macOS / Linux:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/suhwang-atomy/_global-toolkit-releases/main/install.sh | sh
+curl -fsSL https://github.com/suhwang-atomy/_global-toolkit-releases/raw/main/install.sh | sh
 ```
 
 Windows 11 PowerShell:
 
 ```powershell
-irm https://raw.githubusercontent.com/suhwang-atomy/_global-toolkit-releases/main/install.ps1 | iex
+irm https://github.com/suhwang-atomy/_global-toolkit-releases/raw/main/install.ps1 | iex
 ```
 
 The bootstrap script checks for Python 3.12+, provisions it with `uv` when it is missing, discovers the latest `atomy_toolkit_lib-*.whl` release asset, verifies the published SHA256, installs the wheel, and runs `atomy-toolkit self-install`.
