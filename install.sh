@@ -29,8 +29,12 @@ install_uv_python() {
     echo "ERROR: Python 3.12+ not found, and curl is required to install uv." >&2
     exit 1
   fi
-  if ! command -v uv >/dev/null 2>&1; then
-    echo "Installing uv to provision Python 3.12..."
+  UV_BIN="$(command -v uv || true)"
+  if [ -z "$UV_BIN" ] && [ -x "$HOME/.local/bin/uv" ]; then
+    UV_BIN="$HOME/.local/bin/uv"
+  fi
+  if [ -z "$UV_BIN" ]; then
+    echo "Installing uv to provision Python 3.12..." >&2
     curl -LsSf https://astral.sh/uv/install.sh | sh
   fi
   UV_BIN="$(command -v uv || true)"
@@ -41,8 +45,13 @@ install_uv_python() {
     echo "ERROR: uv installation finished but uv was not found." >&2
     exit 1
   fi
-  "$UV_BIN" python install 3.12
-  "$UV_BIN" python find 3.12
+  "$UV_BIN" python install 3.12 >&2
+  PY_FROM_UV="$("$UV_BIN" python find 3.12 | tail -n 1)"
+  if [ -z "$PY_FROM_UV" ] || ! python_ok "$PY_FROM_UV"; then
+    echo "ERROR: uv installed Python 3.12, but the Python executable could not be resolved." >&2
+    exit 1
+  fi
+  printf '%s\n' "$PY_FROM_UV"
 }
 
 PY="$(find_python || install_uv_python)"

@@ -12,11 +12,13 @@ Windows 11 PowerShell:
 irm https://github.com/suhwang-atomy/_global-toolkit-releases/raw/main/install.ps1 | iex
 ```
 
-The bootstrap checks for Python 3.12+. If it is missing, the script installs `uv`, provisions Python 3.12, downloads the latest `atomy_toolkit_lib-*.whl` release asset, verifies SHA256, installs the wheel, and runs:
+The bootstrap checks for Python 3.12+. If it is missing, the script installs `uv`, provisions Python 3.12, downloads the latest `atomy_toolkit_lib-*.whl` release asset, verifies SHA256, installs the wheel into `~/atomy-toolkit/.venv`, and runs:
 
 ```bash
 atomy-toolkit self-install
 ```
+
+If Python bootstrap fails on macOS, install Python 3.12+ first, then run the same command again.
 
 Optional environment variables:
 
