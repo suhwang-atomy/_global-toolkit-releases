@@ -133,12 +133,21 @@ try {
     exit 0
   }
 
-  & $py -m pip --version | Out-Null
-  if ($LASTEXITCODE -ne 0) {
-    & $py -m ensurepip --upgrade
+  New-Item -ItemType Directory -Force -Path $Root | Out-Null
+  $venvDir = Join-Path $Root ".venv"
+  & $py -m venv $venvDir
+  $venvPy = Join-Path $venvDir "Scripts\python.exe"
+  if (-not (Test-Path $venvPy)) {
+    throw "virtual environment Python was not created at $venvPy"
   }
-  & $py -m pip install --user $wheel
-  & $py -m atomy_toolkit.cli self-install --root $Root --coding-tool $CodingTool --ide-tool $IdeTool
+
+  & $venvPy -m pip --version | Out-Null
+  if ($LASTEXITCODE -ne 0) {
+    & $venvPy -m ensurepip --upgrade
+  }
+  & $venvPy -m pip install --upgrade pip | Out-Null
+  & $venvPy -m pip install --upgrade $wheel
+  & $venvPy -m atomy_toolkit.cli self-install --root $Root --coding-tool $CodingTool --ide-tool $IdeTool
   Write-Host "Done. Atomy Toolkit installed to $Root"
 } finally {
   Remove-Item -Recurse -Force $tmp

@@ -164,7 +164,17 @@ if [ "${ATOMY_TOOLKIT_DRY_RUN:-0}" = "1" ]; then
   exit 0
 fi
 
-"$PY" -m pip --version >/dev/null 2>&1 || "$PY" -m ensurepip --upgrade
-"$PY" -m pip install --user "$WHEEL"
-"$PY" -m atomy_toolkit.cli self-install --root "$INSTALL_ROOT" --coding-tool "$CODING_TOOL" --ide-tool "$IDE_TOOL"
+mkdir -p "$INSTALL_ROOT"
+VENV_DIR="$INSTALL_ROOT/.venv"
+"$PY" -m venv "$VENV_DIR"
+VENV_PY="$VENV_DIR/bin/python"
+if [ ! -x "$VENV_PY" ]; then
+  echo "ERROR: virtual environment Python was not created at $VENV_PY" >&2
+  exit 1
+fi
+
+"$VENV_PY" -m pip --version >/dev/null 2>&1 || "$VENV_PY" -m ensurepip --upgrade
+"$VENV_PY" -m pip install --upgrade pip >/dev/null
+"$VENV_PY" -m pip install --upgrade "$WHEEL"
+"$VENV_PY" -m atomy_toolkit.cli self-install --root "$INSTALL_ROOT" --coding-tool "$CODING_TOOL" --ide-tool "$IDE_TOOL"
 echo "Done. Atomy Toolkit installed to $INSTALL_ROOT"
