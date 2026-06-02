@@ -24,6 +24,8 @@ The bootstrap checks for Python 3.12+, provisions it with `uv` when missing, dow
 
 If Python bootstrap fails on macOS, install Python 3.12+ first, then run the same command again.
 
+VS Code is recommended for the best editing experience: https://code.visualstudio.com/
+
 ## Download
 
 ### Windows
