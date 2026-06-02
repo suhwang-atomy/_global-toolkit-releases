@@ -31,6 +31,23 @@ function Find-Python312 {
   return $null
 }
 
+function Get-TextFromUrl {
+  param([string]$Url)
+  $content = (Invoke-WebRequest -UseBasicParsing -Uri $Url).Content
+  if ($content -is [byte[]]) {
+    return [System.Text.Encoding]::UTF8.GetString($content)
+  }
+  return [string]$content
+}
+
+function Save-Url {
+  param(
+    [string]$Url,
+    [string]$OutFile
+  )
+  Invoke-WebRequest -UseBasicParsing -Uri $Url -OutFile $OutFile
+}
+
 function Install-UvPython {
   $uv = (Get-Command uv -ErrorAction SilentlyContinue).Source
   if (-not $uv) {
@@ -66,13 +83,18 @@ if (-not $WheelUrl -or -not $WheelSha) {
     $_.name -like "atomy_toolkit_lib-*.whl"
   } | Select-Object -First 1
   $shaAsset = $release.assets | Where-Object {
-    $_.name -eq "SHA256.txt" -or $_.name -eq "SHA256SUMS.txt"
+    $_.name -eq "SHA256.txt"
   } | Select-Object -First 1
+  if (-not $shaAsset) {
+    $shaAsset = $release.assets | Where-Object {
+      $_.name -eq "SHA256SUMS.txt"
+    } | Select-Object -First 1
+  }
   if (-not $wheelAsset -or -not $shaAsset) {
     throw "latest release is missing atomy_toolkit_lib wheel or SHA256 asset"
   }
   $WheelUrl = $wheelAsset.browser_download_url
-  $shaText = (Invoke-WebRequest -Uri $shaAsset.browser_download_url).Content
+  $shaText = Get-TextFromUrl $shaAsset.browser_download_url
   $wheelLine = ($shaText -split "`r?`n") | Where-Object { $_ -like "*$($wheelAsset.name)*" } | Select-Object -First 1
   if ($wheelLine) {
     $match = [regex]::Match($wheelLine, "\b[0-9a-fA-F]{64}\b")
@@ -98,7 +120,7 @@ try {
     $uri = [Uri]$WheelUrl
     Copy-Item -LiteralPath $uri.LocalPath -Destination $wheel
   } else {
-    Invoke-WebRequest -Uri $WheelUrl -OutFile $wheel
+    Save-Url $WheelUrl $wheel
   }
 
   $actual = (Get-FileHash $wheel -Algorithm SHA256).Hash.ToLowerInvariant()

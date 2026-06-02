@@ -74,13 +74,14 @@ wheel = next(
     None,
 )
 sha = next(
-    (
-        item["browser_download_url"]
-        for item in assets
-        if item.get("name") in {"SHA256.txt", "SHA256SUMS.txt"}
-    ),
+    (item["browser_download_url"] for item in assets if item.get("name") == "SHA256.txt"),
     None,
 )
+if not sha:
+    sha = next(
+        (item["browser_download_url"] for item in assets if item.get("name") == "SHA256SUMS.txt"),
+        None,
+    )
 if not wheel or not sha:
     raise SystemExit("latest release is missing atomy_toolkit_lib wheel or SHA256 asset")
 print(wheel)
