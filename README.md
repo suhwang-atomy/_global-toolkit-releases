@@ -6,6 +6,22 @@ The source repository remains private. This repository publishes installer files
 
 Current release: [v0.1.0](https://github.com/suhwang-atomy/_global-toolkit-releases/releases/tag/v0.1.0)
 
+## One-Line Command Install
+
+macOS / Linux:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/suhwang-atomy/_global-toolkit-releases/main/install.sh | sh
+```
+
+Windows 11 PowerShell:
+
+```powershell
+irm https://raw.githubusercontent.com/suhwang-atomy/_global-toolkit-releases/main/install.ps1 | iex
+```
+
+The bootstrap checks for Python 3.12+, provisions it with `uv` when missing, downloads the latest `atomy_toolkit_lib-*.whl` release asset, verifies SHA256, installs the wheel, and runs `atomy-toolkit self-install`.
+
 ## Download
 
 ### Windows
