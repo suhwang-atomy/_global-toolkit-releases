@@ -73,11 +73,21 @@ if (-not $WheelUrl -or -not $WheelSha) {
   }
   $WheelUrl = $wheelAsset.browser_download_url
   $shaText = (Invoke-WebRequest -Uri $shaAsset.browser_download_url).Content
-  $match = [regex]::Match($shaText, "\b[0-9a-fA-F]{64}\b")
-  if (-not $match.Success) {
-    throw "SHA256 asset does not contain a 64-character hash"
+  $wheelLine = ($shaText -split "`r?`n") | Where-Object { $_ -like "*$($wheelAsset.name)*" } | Select-Object -First 1
+  if ($wheelLine) {
+    $match = [regex]::Match($wheelLine, "\b[0-9a-fA-F]{64}\b")
+    if ($match.Success) {
+      $WheelSha = $match.Value.ToLowerInvariant()
+    }
   }
-  $WheelSha = $match.Value.ToLowerInvariant()
+  if (-not $WheelSha) {
+    $matches = [regex]::Matches($shaText, "\b[0-9a-fA-F]{64}\b")
+    if ($matches.Count -eq 1) {
+      $WheelSha = $matches[0].Value.ToLowerInvariant()
+    } else {
+      throw "SHA256 asset does not contain a unique hash for $($wheelAsset.name)"
+    }
+  }
 }
 
 $tmp = New-Item -ItemType Directory -Path (Join-Path $env:TEMP ([guid]::NewGuid()))

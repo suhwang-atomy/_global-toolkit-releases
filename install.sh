@@ -89,7 +89,8 @@ PYEOF
 )"
   ATOMY_TOOLKIT_WHEEL_URL="$(printf '%s\n' "$ASSETS" | sed -n '1p')"
   SHA_URL="$(printf '%s\n' "$ASSETS" | sed -n '2p')"
-  ATOMY_TOOLKIT_WHEEL_SHA256="$("$PY" - "$SHA_URL" <<'PYEOF'
+  WHEEL_NAME="$(basename "${ATOMY_TOOLKIT_WHEEL_URL%%\?*}")"
+  ATOMY_TOOLKIT_WHEEL_SHA256="$("$PY" - "$SHA_URL" "$WHEEL_NAME" <<'PYEOF'
 from __future__ import annotations
 
 import re
@@ -98,10 +99,18 @@ import urllib.request
 
 with urllib.request.urlopen(sys.argv[1], timeout=30) as response:
     text = response.read().decode("utf-8", errors="replace")
-match = re.search(r"\b[0-9a-fA-F]{64}\b", text)
-if not match:
-    raise SystemExit("SHA256 asset does not contain a 64-character hash")
-print(match.group(0).lower())
+wheel_name = sys.argv[2]
+for line in text.splitlines():
+    if wheel_name in line:
+        match = re.search(r"\b[0-9a-fA-F]{64}\b", line)
+        if match:
+            print(match.group(0).lower())
+            raise SystemExit(0)
+hashes = re.findall(r"\b[0-9a-fA-F]{64}\b", text)
+if len(hashes) == 1:
+    print(hashes[0].lower())
+    raise SystemExit(0)
+raise SystemExit(f"SHA256 asset does not contain a unique hash for {wheel_name}")
 PYEOF
 )"
 fi
