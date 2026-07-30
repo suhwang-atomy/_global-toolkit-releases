@@ -5,7 +5,7 @@
 - **상태:** 발행
 - **릴리스 날짜:** 2026-07-30
 - **비교 기준:** 공개 `v0.3.1` (2026-06-15)
-- **source commit:** `59a3f49dee8977edb70ff8a2f3976db9e1633d99`
+- **source commit:** `f321cc47045bec5c0b08f05163fec2e44bc408f4`
 
 이 저장소에는 공개 Toolkit `v1.0.0` 릴리스가 없습니다. 과거 `1.0.0` 값은 공개
 package 버전이 아니라 cascade metadata 버전입니다. 이 문서는 실제 이전 공개 버전인
@@ -195,12 +195,13 @@ full-night 실행과 다음 날 검수는 남아 있습니다.
 
 | 항목 | 값 |
 |---|---|
-| Source commit | `59a3f49dee8977edb70ff8a2f3976db9e1633d99` |
+| Source commit | `f321cc47045bec5c0b08f05163fec2e44bc408f4` |
 | Cascade master metadata | `1.1.3` |
-| `atomy_toolkit_lib-0.4.0-py3-none-any.whl` SHA256 | `13743ccc648631298c9a87449fef30134cb6036f64dfde456a997d4eea694834` |
-| `SHA256.txt` SHA256 | `536e23217ab5216874277b9bc5a7f787065786645a4aacf50cfbf8b13ad02375` |
-| `install-cli.sh` SHA256 | `1c705d7cc4c9337ff05e7ea9335980cd745fb72f3f149b5c20023f6f826b33ae` |
-| `install-cli.ps1` SHA256 | `dd9af81d6f4705d765d461798cbe14b16ed9af84da4cb9a1712a2d9572657d34` |
+| 재현 가능한 wheel epoch | `SOURCE_DATE_EPOCH=1785391413` |
+| `atomy_toolkit_lib-0.4.0-py3-none-any.whl` SHA256 | `bd90615f04c647a0d3e004ea75e65bb18bad3467a335316b0d9883c079c2043a` |
+| `SHA256.txt` SHA256 | `563350acde38236dd788056df7045d426a52f56567ddc353ca0dd26825e1f08d` |
+| `install-cli.sh` SHA256 | `c4509c51bc5cb18f3d0d33867477fc327976f19b889df5642aec76d9e6b7ffdc` |
+| `install-cli.ps1` SHA256 | `0d96ad79157eddf03502958f9cc3d33aaa27d09f92b5d00cbb9a62dd1f606804` |
 
 릴리스 검증은 위 source commit과 공개 asset 4개에 적용됩니다. 독립 다운로드 검증
 절차는 [공개 설치 가이드](docs/reference/PUBLIC_RELEASE_INSTALL_GUIDE.md)를 참고하세요.
