@@ -160,7 +160,7 @@ production topology의 일부가 아닙니다.
 
 의도한 host는 Toolkit이 설치되고 capability 검사를 통과한 장치입니다. 예를 들어
 퇴근할 때 켜 둔 workstation을 사용할 수 있으며 운영 서버 기능이 아닙니다. 첫 실제
-full-night 실행과 다음 날 검수는 남아 있습니다.
+full-night 실행과 다음 날 검수를 완료했습니다.
 
 ### Adapter와 skill-lifecycle 제약
 
