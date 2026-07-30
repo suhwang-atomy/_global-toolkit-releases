@@ -3,7 +3,7 @@ $ErrorActionPreference = "Stop"
 # An explicit environment override wins; otherwise use the pinned public
 # v0.4.0 wheel and its release checksum.
 $WheelUrl = $env:ATOMY_TOOLKIT_WHEEL_URL; if (-not $WheelUrl) { $WheelUrl = "https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.0/atomy_toolkit_lib-0.4.0-py3-none-any.whl" }
-$WheelSha = $env:ATOMY_TOOLKIT_WHEEL_SHA256; if (-not $WheelSha) { $WheelSha = "13743ccc648631298c9a87449fef30134cb6036f64dfde456a997d4eea694834" }
+$WheelSha = $env:ATOMY_TOOLKIT_WHEEL_SHA256; if (-not $WheelSha) { $WheelSha = "bd90615f04c647a0d3e004ea75e65bb18bad3467a335316b0d9883c079c2043a" }
 $Root = if ($env:ATOMY_TOOLKIT_INSTALL_ROOT) { $env:ATOMY_TOOLKIT_INSTALL_ROOT } else { Join-Path $HOME "atomy-toolkit" }
 $CodingTool = if ($env:ATOMY_TOOLKIT_CODING_TOOL) { $env:ATOMY_TOOLKIT_CODING_TOOL } else { "codex" }
 $IdeTool = if ($env:ATOMY_TOOLKIT_IDE_TOOL) { $env:ATOMY_TOOLKIT_IDE_TOOL } else { "skip" }

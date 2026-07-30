@@ -14,7 +14,7 @@ Atomy Toolkit의 공개 clean-slate 배포 저장소입니다. Atomy Toolkit은 
 > - 현재 공개 최신 버전:
 >   [v0.4.0](https://github.com/suhwang-atomy/_global-toolkit-releases/releases/tag/v0.4.0)
 > - 비교 기준: 공개 `v0.3.1`
-> - source commit: `59a3f49dee8977edb70ff8a2f3976db9e1633d99`
+> - source commit: `f321cc47045bec5c0b08f05163fec2e44bc408f4`
 > - 상세 변경: [한국어 패치 노트](PATCH_NOTES.ko.md) ·
 >   [English patch notes](PATCH_NOTES.md)
 
@@ -42,7 +42,7 @@ Linux:
 
 ```bash
 curl -fL -o install-cli.sh https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.0/install-cli.sh
-echo "1c705d7cc4c9337ff05e7ea9335980cd745fb72f3f149b5c20023f6f826b33ae  install-cli.sh" | sha256sum -c -
+echo "c4509c51bc5cb18f3d0d33867477fc327976f19b889df5642aec76d9e6b7ffdc  install-cli.sh" | sha256sum -c -
 sh install-cli.sh
 ```
 
@@ -50,7 +50,7 @@ macOS:
 
 ```bash
 curl -fL -o install-cli.sh https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.0/install-cli.sh
-echo "1c705d7cc4c9337ff05e7ea9335980cd745fb72f3f149b5c20023f6f826b33ae  install-cli.sh" | shasum -a 256 -c -
+echo "c4509c51bc5cb18f3d0d33867477fc327976f19b889df5642aec76d9e6b7ffdc  install-cli.sh" | shasum -a 256 -c -
 sh install-cli.sh
 ```
 
@@ -58,7 +58,7 @@ Windows 11 PowerShell:
 
 ```powershell
 Invoke-WebRequest -Uri https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.0/install-cli.ps1 -OutFile install-cli.ps1
-$expected = "dd9af81d6f4705d765d461798cbe14b16ed9af84da4cb9a1712a2d9572657d34"
+$expected = "0d96ad79157eddf03502958f9cc3d33aaa27d09f92b5d00cbb9a62dd1f606804"
 $actual = (Get-FileHash .\install-cli.ps1 -Algorithm SHA256).Hash.ToLowerInvariant()
 if ($actual -ne $expected) { throw "Installer SHA256 mismatch" }
 & .\install-cli.ps1
@@ -79,10 +79,10 @@ v0.4.0 GitHub Release asset은 정확히 4개입니다.
 
 | Asset | SHA256 |
 |---|---|
-| `atomy_toolkit_lib-0.4.0-py3-none-any.whl` | `13743ccc648631298c9a87449fef30134cb6036f64dfde456a997d4eea694834` |
-| `SHA256.txt` | `536e23217ab5216874277b9bc5a7f787065786645a4aacf50cfbf8b13ad02375` |
-| `install-cli.sh` | `1c705d7cc4c9337ff05e7ea9335980cd745fb72f3f149b5c20023f6f826b33ae` |
-| `install-cli.ps1` | `dd9af81d6f4705d765d461798cbe14b16ed9af84da4cb9a1712a2d9572657d34` |
+| `atomy_toolkit_lib-0.4.0-py3-none-any.whl` | `bd90615f04c647a0d3e004ea75e65bb18bad3467a335316b0d9883c079c2043a` |
+| `SHA256.txt` | `563350acde38236dd788056df7045d426a52f56567ddc353ca0dd26825e1f08d` |
+| `install-cli.sh` | `c4509c51bc5cb18f3d0d33867477fc327976f19b889df5642aec76d9e6b7ffdc` |
+| `install-cli.ps1` | `0d96ad79157eddf03502958f9cc3d33aaa27d09f92b5d00cbb9a62dd1f606804` |
 
 `SHA256.txt`에는 wheel과 command installer 2개의 hash가 들어 있습니다. checksum
 파일은 자기 자신의 안정적인 hash를 포함할 수 없으므로 `SHA256.txt`의 hash는 위 표에
