@@ -1,32 +1,31 @@
-# Next Atomy Toolkit Release — Patch Notes
+# Atomy Toolkit v0.4.0 — Patch Notes
 
 English | [한국어](PATCH_NOTES.ko.md)
 
-- **Status:** Unreleased candidate
+- **Status:** Released
+- **Release date:** 2026-07-30
 - **Comparison baseline:** Public `v0.3.1` (2026-06-15)
-- **Candidate source snapshot:** 2026-07-30
-- **Candidate source commit:** `e2287f4125c8fdd620fa088299a7616499d92928`
+- **Source commit:** `30c7e26a9a023c598a498b24157c418ed660e4fe`
 
 There is no public Toolkit `v1.0.0` release in this repository. The historical
 `1.0.0` value belongs to cascade metadata, not the public package version.
-These notes therefore compare the candidate with the actual latest public
-release, `v0.3.1`.
+These notes compare v0.4.0 with the actual previous public release, v0.3.1.
 
 ## Maturity labels
 
-- **Verified:** implementation and its defined local/integration verification
-  passed.
+- **Verified:** implementation and its defined local or integration
+  verification passed.
 - **Preview:** implementation and local contracts passed, but a named live E2E
   or production validation is still pending.
 - **Experimental:** the first real-environment run or a core operating
   assumption remains unverified.
-- **Future:** not available in this candidate.
+- **Future:** not provided by v0.4.0.
 
 ## Verified changes since v0.3.1
 
 ### Safer cascade and existing-project maintenance
 
-- Added normalized origin hashes so `cascade sync` can distinguish untouched
+- Added normalized origin hashes so `cascade sync` distinguishes untouched
   Toolkit defaults from user-edited files.
 - Added plan-before-apply, immediate revalidation, atomic writes, explicit skip
   reasons, and a deliberate `--force` escape hatch.
@@ -39,7 +38,7 @@ release, `v0.3.1`.
   defaults can be removed from downstream installations.
 
 This is not a three-way merge system. Automatic rollback after a completed
-cascade operation and damaged-metadata repair are not provided.
+cascade operation and automatic repair of damaged metadata are not provided.
 
 ### Review, handoff, and worktree workflows
 
@@ -52,26 +51,27 @@ cascade operation and damaged-metadata repair are not provided.
   shared project context from a child worktree.
 - Carry-forward rotation preserves explicitly active work, retires completed
   entries, and keeps ambiguous legacy state with a warning.
-- `/audit` can remind on a configurable session interval or phase transition
+- `/audit` can remind on a configured session interval or phase transition
   without automatically running an audit or blocking handoff.
-- Six workflow commands share local, opt-in start/result telemetry. Arguments,
+- Workflow commands share local, opt-in start/result telemetry. Arguments,
   prompts, paths, project names, branch names, and error bodies are not stored.
 
 ### Project Intelligence Graph and Graph Report
 
-- Added deterministic code index build/status/find/impact surfaces with a
-  Python AST fallback when Graphify is unavailable.
+- Added deterministic code-index build, status, find, and impact surfaces with
+  a Python AST fallback when Graphify is unavailable.
 - Configured main workspaces refresh only stale memory/code indexes during
   handoff, in-process and within fixed time budgets.
 - Added code-to-decision links based on repository-relative file evidence and
   real symbols; low-confidence or tied candidates remain unlinked.
 - Added a self-contained offline Graph Report with scorecard, narrative,
-  structure map, and evidence appendix.
-- Added an approval-based judge view that fails closed on unapproved values.
-- The final protected-data dogfood seal passed with leak count `0`; its approved
-  decision link and scorecard metrics matched the sealed expectations.
-- Removed the Graph Report MPL-2.0 dependency path; the final lockfile had zero
-  MPL-2.0 packages and `npm audit` reported zero findings.
+  structure map, evidence appendix, and an approval-based judge view.
+- Removed the installed MPL dependency path from Graph Report.
+- Generated third-party notices cover exactly 35 runtime-bundled package
+  records. Their licenses are MIT, ISC, or BSD-3-Clause; installed
+  MPL-licensed package records are `0`.
+- The same notice set is shipped beside the report template and embedded into
+  generated standalone reports.
 
 Graph Report is a local artifact generator, not a hosted service.
 
@@ -83,11 +83,11 @@ Graph Report is a local artifact generator, not a hosted service.
   embedding shim.
 - Kept backend-neutral core behavior; local ChromaDB support is an optional
   extra rather than a required dependency.
-- Hardened wheel/sdist/clean-venv checks for the five built-in Memtemple plugin
-  manifests and extractor-to-drawer behavior.
-- Extended clean-slate staging and leak guards so local Graph, runtime state,
-  credentials, source history, and in-flight memory cannot enter public
-  artifacts.
+- Hardened wheel, sdist, and clean-environment checks for built-in Memtemple
+  plugin manifests and extractor-to-drawer behavior.
+- Extended clean-slate staging and leak guards so local Graph data, runtime
+  state, credentials, source history, user memory, and in-flight project
+  documents cannot enter public artifacts.
 
 ### Local governance primitives
 
@@ -97,11 +97,25 @@ Graph Report is a local artifact generator, not a hosted service.
   records, exact duplicate checks, non-executing static scans,
   `PASS`/`QUARANTINE`/`REJECT`, append-only provenance, snapshots, and
   transaction rollback.
-- Added command telemetry lifecycle consistency and deterministic audit
+- Added consistent command-telemetry lifecycle handling and deterministic audit
   reminders.
 
 The rulepack and skill APIs do not auto-merge, auto-promote, or automatically
 move installed skills.
+
+### Public packaging and compliance
+
+- Declared the project license as MIT and included [LICENSE](LICENSE) in the
+  wheel and public release repository.
+- Included adapted-material attribution in [NOTICE](NOTICE).
+- Included the generated
+  [Graph Report third-party notices](THIRD_PARTY_NOTICES.md).
+- Replaced automatic remote `uv` installer execution with a fail-closed
+  prerequisite: use Python 3.12+ or install `uv` separately first.
+- The pinned bootstrap verifies the wheel SHA256 before installation and always
+  installs into an isolated virtual environment.
+- The supported v0.4.0 GitHub Release contains exactly four assets: the wheel,
+  `SHA256.txt`, `install-cli.sh`, and `install-cli.ps1`.
 
 ## Preview
 
@@ -111,20 +125,24 @@ move installed skills.
   ledgers, tombstones, spool intents, bounded transport, and
   `kf push|flush|status`.
 - Verified a complete local loopback ingest/backfill/apply path.
-- Verified a temporary encrypted-tunnel cross-device round trip using a remote
-  test resource.
+- Verified a temporary encrypted-tunnel cross-device round trip.
 
-The remote device was not a production server. No supported central hub,
-custody policy, production deployment, or cascade-update service exists yet.
+The DGX in the cross-device test was simply another available PC. It was not
+an operating server and is not part of a production topology.
+
+A future service could accept user-provided Memtemple records and batch their
+embedding work centrally. Railway or AWS hosting and a possible cascade
+patch/update service are separate future design and validation tasks. v0.4.0
+does not deploy or operate those services.
 
 ### Rulepack collaboration pilot
 
 - A Codex worker and a Claude worker implemented the same synthetic contract in
-  isolated Orca worktrees.
-- Both outputs passed their focused tests and the same rulepack input.
+  isolated worktrees.
+- Both outputs passed their focused tests against the same rulepack input.
 
-The pilot was local only. No remote push, PR workflow, multi-user rollout, or
-production enforcement was validated.
+The pilot was local only. Remote collaboration, multi-user rollout, and
+production enforcement were not validated.
 
 ### Absence Batch and Research Relay labs
 
@@ -132,8 +150,7 @@ production enforcement was validated.
 - Local deterministic tests and runtime packaging are complete.
 
 The first live external draft-PR E2E and scheduled Research Relay run remain
-pending. These labs are not part of the supported default installation
-workflow.
+pending. These labs are not part of the supported default installation flow.
 
 ## Experimental
 
@@ -143,61 +160,59 @@ Implemented:
 
 - one sealed pre-run action table;
 - dynamic host capability checks;
-- isolated worktree and non-default branch;
+- an isolated worktree and non-default branch;
 - controller-only run key, credentials, reads, and copies;
 - a network- and credential-denied worker sandbox;
-- signed evidence and exact action-to-item failure isolation;
+- signed evidence and exact action-to-item failure isolation; and
 - morning `GO`/`NO-GO`, where `NO-GO` has no remote effect.
 
-The first real full-chain night and next-morning review have not run. Until that
-evidence exists, use this only on a capability-checked Toolkit device with an
-isolated branch. It is not an operating-server feature.
+The intended host is a capability-checked device with the Toolkit installed,
+such as a workstation left on overnight. It is not an operating-server feature.
+The first full real overnight run and next-morning review remain pending.
 
-### Adapter limits
+### Adapter and skill-lifecycle limits
 
 - Claude Code and Codex have deep verified adapters.
-- Cursor and the Claude Desktop MCP configuration path have completed their
-  defined verification.
-- Antigravity has a three-layer adapter and partial dogfood evidence, but its
-  workflow-routing assumptions need a new revision.
+- Cursor and the Claude Desktop MCP configuration path completed their defined
+  verification.
+- Antigravity retains partial dogfood evidence but needs further
+  workflow-routing validation.
 - Cowork retains a capability profile without a completed live smoke.
-
-### Skill lifecycle and intake mutation
-
-The APIs are implemented and fixture-tested, but real installed-skill moves,
-activation, downstream sharing, and user-memory mutation have not been run.
-Automatic movement remains off.
+- Skill lifecycle APIs are fixture-tested, but real installed-skill movement,
+  activation, downstream sharing, and user-memory mutation have not run.
+  Automatic movement remains off.
 
 ## Breaking and migration notes
 
 - Replace `/memory ...` with `atomy-toolkit memtemple ...`.
 - Do not import retired Mempalace librarian modules or the legacy embedding
   shim.
-- Install the optional local embedding extra only when a local embedding
+- Install the optional local-embedding extra only when a local embedding
   backend is required.
 - Existing user-edited Toolkit files are preserved by default during
   `cascade sync`; review skip reports instead of assuming every file changed.
+- Ensure Python 3.12+ or `uv` is installed before running the public
+  bootstrap. The bootstrap no longer installs `uv` automatically.
 
-## Not operational in this candidate
+## Not operational in v0.4.0
 
-- `atomy-toolkit update` does not yet download and apply a package, and
-  `update rollback` does not restore one. Those commands currently expose
-  discovery/confirmation scaffolding only.
-- The candidate's managed-asset path is `atomy-toolkit cascade sync`, not
-  generic self-update. Its origin-hash protections are not in public `v0.3.1`.
-- P5 `/transfer`, the P6 skill promotion ladder, a production embedding hub,
+- `atomy-toolkit update` does not download and apply a package, and
+  `update rollback` does not restore one. Managed-asset maintenance uses
+  `atomy-toolkit cascade sync`.
+- P5 `/transfer`, the P6 skill-promotion ladder, a production embedding hub,
   automatic merge, protected/default-branch writes, and production endpoint
   deployment are not provided.
 
-## Candidate verification snapshot
+## Release identity
 
-- Full Python suite: `3,223 passed`, `16 skipped`, `1 xfailed`
-- AFK and contract suite: `451 passed`, `1 xfailed`
-- Changed Python source: Ruff and mypy clean
-- Cascade-focused bundle: `97 passed`
-- Graph seal: candidate source commit, tracked-clean input, owner artifact
-  deleted, judge leak count `0`
+| Item | Value |
+|---|---|
+| Source commit | `30c7e26a9a023c598a498b24157c418ed660e4fe` |
+| `atomy_toolkit_lib-0.4.0-py3-none-any.whl` SHA256 | `6a9097f2be443192db66fa5f038b435b391549760641878db109525330321297` |
+| `SHA256.txt` SHA256 | `d9152e55afb076fd082fbfa4e351b67c31d86730cb2121f5899ecb0a10d25847` |
+| `install-cli.sh` SHA256 | `c0f69359660310a6baeecfdc338eaecce0669a56e097a6f3c4da57653d58923c` |
+| `install-cli.ps1` SHA256 | `b986da519b3b04725895aa82a02a03de64e802ed52db8ada98bc5aea1ca3a1ea` |
 
-These results describe the source candidate. A release is complete only after a
-new version, clean wheel, checksum, command installers, isolated install smoke,
-and GitHub Release are published and verified.
+Release verification covers the exact source commit and these four public
+assets. See the [public install guide](docs/reference/PUBLIC_RELEASE_INSTALL_GUIDE.md)
+for independent download verification.
