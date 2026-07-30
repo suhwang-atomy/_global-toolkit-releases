@@ -7,7 +7,7 @@ This guide documents the public, clean-slate Atomy Toolkit artifact channel.
   <https://github.com/suhwang-atomy/_global-toolkit-releases>
 - Current release:
   [v0.4.0](https://github.com/suhwang-atomy/_global-toolkit-releases/releases/tag/v0.4.0)
-- Exact source commit: `30c7e26a9a023c598a498b24157c418ed660e4fe`
+- Exact source commit: `59a3f49dee8977edb70ff8a2f3976db9e1633d99`
 
 ## Supported release assets
 
@@ -15,10 +15,10 @@ The v0.4.0 GitHub Release contains exactly these four assets:
 
 | Asset | SHA256 |
 |---|---|
-| `atomy_toolkit_lib-0.4.0-py3-none-any.whl` | `6a9097f2be443192db66fa5f038b435b391549760641878db109525330321297` |
-| `SHA256.txt` | `d9152e55afb076fd082fbfa4e351b67c31d86730cb2121f5899ecb0a10d25847` |
-| `install-cli.sh` | `c0f69359660310a6baeecfdc338eaecce0669a56e097a6f3c4da57653d58923c` |
-| `install-cli.ps1` | `b986da519b3b04725895aa82a02a03de64e802ed52db8ada98bc5aea1ca3a1ea` |
+| `atomy_toolkit_lib-0.4.0-py3-none-any.whl` | `13743ccc648631298c9a87449fef30134cb6036f64dfde456a997d4eea694834` |
+| `SHA256.txt` | `536e23217ab5216874277b9bc5a7f787065786645a4aacf50cfbf8b13ad02375` |
+| `install-cli.sh` | `1c705d7cc4c9337ff05e7ea9335980cd745fb72f3f149b5c20023f6f826b33ae` |
+| `install-cli.ps1` | `dd9af81d6f4705d765d461798cbe14b16ed9af84da4cb9a1712a2d9572657d34` |
 
 No native `.exe`, `.pkg`, `.dmg`, or `.AppImage` belongs to the supported
 v0.4.0 channel.
@@ -53,7 +53,7 @@ asset, verify it, and execute the verified local file.
 
 ```bash
 curl -fL -o install-cli.sh https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.0/install-cli.sh
-echo "c0f69359660310a6baeecfdc338eaecce0669a56e097a6f3c4da57653d58923c  install-cli.sh" | sha256sum -c -
+echo "1c705d7cc4c9337ff05e7ea9335980cd745fb72f3f149b5c20023f6f826b33ae  install-cli.sh" | sha256sum -c -
 sh install-cli.sh
 ```
 
@@ -61,7 +61,7 @@ sh install-cli.sh
 
 ```bash
 curl -fL -o install-cli.sh https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.0/install-cli.sh
-echo "c0f69359660310a6baeecfdc338eaecce0669a56e097a6f3c4da57653d58923c  install-cli.sh" | shasum -a 256 -c -
+echo "1c705d7cc4c9337ff05e7ea9335980cd745fb72f3f149b5c20023f6f826b33ae  install-cli.sh" | shasum -a 256 -c -
 sh install-cli.sh
 ```
 
@@ -69,7 +69,7 @@ sh install-cli.sh
 
 ```powershell
 Invoke-WebRequest -Uri https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.0/install-cli.ps1 -OutFile install-cli.ps1
-$expected = "b986da519b3b04725895aa82a02a03de64e802ed52db8ada98bc5aea1ca3a1ea"
+$expected = "dd9af81d6f4705d765d461798cbe14b16ed9af84da4cb9a1712a2d9572657d34"
 $actual = (Get-FileHash .\install-cli.ps1 -Algorithm SHA256).Hash.ToLowerInvariant()
 if ($actual -ne $expected) { throw "Installer SHA256 mismatch" }
 & .\install-cli.ps1
@@ -78,7 +78,7 @@ if ($actual -ne $expected) { throw "Installer SHA256 mismatch" }
 <!-- markdownlint-enable MD013 -->
 
 The command installers contain the pinned wheel URL and
-`6a9097f2be443192db66fa5f038b435b391549760641878db109525330321297`. They download that wheel, verify its bytes,
+`13743ccc648631298c9a87449fef30134cb6036f64dfde456a997d4eea694834`. They download that wheel, verify its bytes,
 create an isolated virtual environment, install the wheel, and run
 `atomy-toolkit self-install`.
 
@@ -94,7 +94,7 @@ curl -fLO "$base/SHA256.txt"
 curl -fLO "$base/atomy_toolkit_lib-0.4.0-py3-none-any.whl"
 curl -fLO "$base/install-cli.sh"
 curl -fLO "$base/install-cli.ps1"
-echo "d9152e55afb076fd082fbfa4e351b67c31d86730cb2121f5899ecb0a10d25847  SHA256.txt" | sha256sum -c -
+echo "536e23217ab5216874277b9bc5a7f787065786645a4aacf50cfbf8b13ad02375  SHA256.txt" | sha256sum -c -
 sha256sum -c SHA256.txt
 ```
 
@@ -108,7 +108,7 @@ Invoke-WebRequest "$base/SHA256.txt" -OutFile SHA256.txt
 Invoke-WebRequest "$base/atomy_toolkit_lib-0.4.0-py3-none-any.whl" -OutFile atomy_toolkit_lib-0.4.0-py3-none-any.whl
 Invoke-WebRequest "$base/install-cli.sh" -OutFile install-cli.sh
 Invoke-WebRequest "$base/install-cli.ps1" -OutFile install-cli.ps1
-$shaFileExpected = "d9152e55afb076fd082fbfa4e351b67c31d86730cb2121f5899ecb0a10d25847"
+$shaFileExpected = "536e23217ab5216874277b9bc5a7f787065786645a4aacf50cfbf8b13ad02375"
 $shaFileActual = (Get-FileHash .\SHA256.txt -Algorithm SHA256).Hash.ToLowerInvariant()
 if ($shaFileActual -ne $shaFileExpected) { throw "SHA256.txt mismatch" }
 Get-Content .\SHA256.txt | Where-Object { $_ -match "^[0-9a-f]{64}\s+" } | ForEach-Object {
@@ -164,7 +164,7 @@ operated by v0.4.0.
 ## Operator release flow
 
 1. Build from exact private source commit
-   `30c7e26a9a023c598a498b24157c418ed660e4fe` in a clean checkout.
+   `59a3f49dee8977edb70ff8a2f3976db9e1633d99` in a clean checkout.
 2. Run the final Python, Graph, package, leak, license, and isolated-install
    release gates once at the release boundary.
 3. Produce only:

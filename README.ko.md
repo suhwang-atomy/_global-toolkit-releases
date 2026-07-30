@@ -14,7 +14,7 @@ Atomy Toolkit의 공개 clean-slate 배포 저장소입니다. Atomy Toolkit은 
 > - 현재 공개 최신 버전:
 >   [v0.4.0](https://github.com/suhwang-atomy/_global-toolkit-releases/releases/tag/v0.4.0)
 > - 비교 기준: 공개 `v0.3.1`
-> - source commit: `30c7e26a9a023c598a498b24157c418ed660e4fe`
+> - source commit: `59a3f49dee8977edb70ff8a2f3976db9e1633d99`
 > - 상세 변경: [한국어 패치 노트](PATCH_NOTES.ko.md) ·
 >   [English patch notes](PATCH_NOTES.md)
 
@@ -42,7 +42,7 @@ Linux:
 
 ```bash
 curl -fL -o install-cli.sh https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.0/install-cli.sh
-echo "c0f69359660310a6baeecfdc338eaecce0669a56e097a6f3c4da57653d58923c  install-cli.sh" | sha256sum -c -
+echo "1c705d7cc4c9337ff05e7ea9335980cd745fb72f3f149b5c20023f6f826b33ae  install-cli.sh" | sha256sum -c -
 sh install-cli.sh
 ```
 
@@ -50,7 +50,7 @@ macOS:
 
 ```bash
 curl -fL -o install-cli.sh https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.0/install-cli.sh
-echo "c0f69359660310a6baeecfdc338eaecce0669a56e097a6f3c4da57653d58923c  install-cli.sh" | shasum -a 256 -c -
+echo "1c705d7cc4c9337ff05e7ea9335980cd745fb72f3f149b5c20023f6f826b33ae  install-cli.sh" | shasum -a 256 -c -
 sh install-cli.sh
 ```
 
@@ -58,7 +58,7 @@ Windows 11 PowerShell:
 
 ```powershell
 Invoke-WebRequest -Uri https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.0/install-cli.ps1 -OutFile install-cli.ps1
-$expected = "b986da519b3b04725895aa82a02a03de64e802ed52db8ada98bc5aea1ca3a1ea"
+$expected = "dd9af81d6f4705d765d461798cbe14b16ed9af84da4cb9a1712a2d9572657d34"
 $actual = (Get-FileHash .\install-cli.ps1 -Algorithm SHA256).Hash.ToLowerInvariant()
 if ($actual -ne $expected) { throw "Installer SHA256 mismatch" }
 & .\install-cli.ps1
@@ -79,10 +79,10 @@ v0.4.0 GitHub Release asset은 정확히 4개입니다.
 
 | Asset | SHA256 |
 |---|---|
-| `atomy_toolkit_lib-0.4.0-py3-none-any.whl` | `6a9097f2be443192db66fa5f038b435b391549760641878db109525330321297` |
-| `SHA256.txt` | `d9152e55afb076fd082fbfa4e351b67c31d86730cb2121f5899ecb0a10d25847` |
-| `install-cli.sh` | `c0f69359660310a6baeecfdc338eaecce0669a56e097a6f3c4da57653d58923c` |
-| `install-cli.ps1` | `b986da519b3b04725895aa82a02a03de64e802ed52db8ada98bc5aea1ca3a1ea` |
+| `atomy_toolkit_lib-0.4.0-py3-none-any.whl` | `13743ccc648631298c9a87449fef30134cb6036f64dfde456a997d4eea694834` |
+| `SHA256.txt` | `536e23217ab5216874277b9bc5a7f787065786645a4aacf50cfbf8b13ad02375` |
+| `install-cli.sh` | `1c705d7cc4c9337ff05e7ea9335980cd745fb72f3f149b5c20023f6f826b33ae` |
+| `install-cli.ps1` | `dd9af81d6f4705d765d461798cbe14b16ed9af84da4cb9a1712a2d9572657d34` |
 
 `SHA256.txt`에는 wheel과 command installer 2개의 hash가 들어 있습니다. checksum
 파일은 자기 자신의 안정적인 hash를 포함할 수 없으므로 `SHA256.txt`의 hash는 위 표에
@@ -109,6 +109,9 @@ asset은 서명되지 않았습니다. 위 고정 hash가 릴리스 무결성 �
   shim을 제거했습니다.
 - **Project Intelligence Graph** — 결정적 index, 영향 범위 조회, 승인 기반 judge
   화면을 포함한 독립 실행형 offline Graph Report를 제공합니다.
+- **브라우저 검증 dependency** — Graph Report가 Playwright `1.62.0`을 직접
+  development dependency로 고정합니다. Ubuntu CI는 Chromium 브라우저 검사를
+  실행하며 Playwright는 runtime wheel에 포함되지 않습니다.
 - **로컬 통제 기능** — opt-in·network-free command telemetry, 결정적 audit 알림,
   보호된 skill-intake primitive와 offline rulepack 검사를 제공합니다.
 - **릴리스 compliance** — clean-slate 패키징이 source history, 자격증명, local
@@ -167,7 +170,7 @@ atomy-toolkit afk --help
 
 `v0.4.0` 같은 GitHub tag는 공개 Toolkit 제품 릴리스입니다. 과거 cascade metadata의
 `1.0.0`은 별도 내부 asset 버전 계보이며 공개 Toolkit `v1.0.0` 릴리스를 의미하지
-않습니다.
+않습니다. 이 wheel의 cascade master metadata는 `1.1.3`입니다.
 
 ## 라이선스, 고지와 개인정보 보호
 

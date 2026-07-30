@@ -14,7 +14,7 @@ to redistribute the release.
 > - Latest public release:
 >   [v0.4.0](https://github.com/suhwang-atomy/_global-toolkit-releases/releases/tag/v0.4.0)
 > - Comparison baseline: public `v0.3.1`
-> - Source commit: `30c7e26a9a023c598a498b24157c418ed660e4fe`
+> - Source commit: `59a3f49dee8977edb70ff8a2f3976db9e1633d99`
 > - Detailed changes: [English patch notes](PATCH_NOTES.md) ·
 >   [한국어 패치 노트](PATCH_NOTES.ko.md)
 
@@ -43,7 +43,7 @@ Linux:
 
 ```bash
 curl -fL -o install-cli.sh https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.0/install-cli.sh
-echo "c0f69359660310a6baeecfdc338eaecce0669a56e097a6f3c4da57653d58923c  install-cli.sh" | sha256sum -c -
+echo "1c705d7cc4c9337ff05e7ea9335980cd745fb72f3f149b5c20023f6f826b33ae  install-cli.sh" | sha256sum -c -
 sh install-cli.sh
 ```
 
@@ -51,7 +51,7 @@ macOS:
 
 ```bash
 curl -fL -o install-cli.sh https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.0/install-cli.sh
-echo "c0f69359660310a6baeecfdc338eaecce0669a56e097a6f3c4da57653d58923c  install-cli.sh" | shasum -a 256 -c -
+echo "1c705d7cc4c9337ff05e7ea9335980cd745fb72f3f149b5c20023f6f826b33ae  install-cli.sh" | shasum -a 256 -c -
 sh install-cli.sh
 ```
 
@@ -59,7 +59,7 @@ Windows 11 PowerShell:
 
 ```powershell
 Invoke-WebRequest -Uri https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.0/install-cli.ps1 -OutFile install-cli.ps1
-$expected = "b986da519b3b04725895aa82a02a03de64e802ed52db8ada98bc5aea1ca3a1ea"
+$expected = "dd9af81d6f4705d765d461798cbe14b16ed9af84da4cb9a1712a2d9572657d34"
 $actual = (Get-FileHash .\install-cli.ps1 -Algorithm SHA256).Hash.ToLowerInvariant()
 if ($actual -ne $expected) { throw "Installer SHA256 mismatch" }
 & .\install-cli.ps1
@@ -82,10 +82,10 @@ The v0.4.0 GitHub Release has exactly four assets:
 
 | Asset | SHA256 |
 |---|---|
-| `atomy_toolkit_lib-0.4.0-py3-none-any.whl` | `6a9097f2be443192db66fa5f038b435b391549760641878db109525330321297` |
-| `SHA256.txt` | `d9152e55afb076fd082fbfa4e351b67c31d86730cb2121f5899ecb0a10d25847` |
-| `install-cli.sh` | `c0f69359660310a6baeecfdc338eaecce0669a56e097a6f3c4da57653d58923c` |
-| `install-cli.ps1` | `b986da519b3b04725895aa82a02a03de64e802ed52db8ada98bc5aea1ca3a1ea` |
+| `atomy_toolkit_lib-0.4.0-py3-none-any.whl` | `13743ccc648631298c9a87449fef30134cb6036f64dfde456a997d4eea694834` |
+| `SHA256.txt` | `536e23217ab5216874277b9bc5a7f787065786645a4aacf50cfbf8b13ad02375` |
+| `install-cli.sh` | `1c705d7cc4c9337ff05e7ea9335980cd745fb72f3f149b5c20023f6f826b33ae` |
+| `install-cli.ps1` | `dd9af81d6f4705d765d461798cbe14b16ed9af84da4cb9a1712a2d9572657d34` |
 
 `SHA256.txt` records the wheel and both command-installer hashes. Its own hash
 is listed above because a checksum file cannot contain a stable checksum of
@@ -115,6 +115,9 @@ Features are grouped by maturity. “Implemented” does not automatically mean
   shim have been retired.
 - **Project Intelligence Graph** — deterministic indexes, impact queries, and
   a self-contained offline Graph Report with an approval-based judge view.
+- **Browser verification dependency** — Graph Report pins Playwright `1.62.0`
+  as a direct development dependency. Ubuntu CI runs Chromium browser checks;
+  Playwright is not included in the runtime wheel.
 - **Local controls** — opt-in, network-free command telemetry; deterministic
   audit reminders; guarded skill-intake primitives; and offline rulepack
   checks.
@@ -179,7 +182,8 @@ atomy-toolkit afk --help
 
 GitHub tags such as `v0.4.0` are public Toolkit product releases. The historical
 `1.0.0` value found in cascade metadata belongs to a separate internal asset
-version lineage; it is not a public `v1.0.0` Toolkit release.
+version lineage; it is not a public `v1.0.0` Toolkit release. This wheel carries
+cascade master metadata `1.1.3`.
 
 ## License, notices, and privacy
 

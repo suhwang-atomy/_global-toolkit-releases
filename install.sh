@@ -4,7 +4,7 @@ set -eu
 # Inputs: an explicit environment override wins; otherwise use the pinned
 # public v0.4.0 wheel and its release checksum.
 WHEEL_URL="${ATOMY_TOOLKIT_WHEEL_URL:-https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.0/atomy_toolkit_lib-0.4.0-py3-none-any.whl}"
-WHEEL_SHA256="${ATOMY_TOOLKIT_WHEEL_SHA256:-6a9097f2be443192db66fa5f038b435b391549760641878db109525330321297}"
+WHEEL_SHA256="${ATOMY_TOOLKIT_WHEEL_SHA256:-13743ccc648631298c9a87449fef30134cb6036f64dfde456a997d4eea694834}"
 INSTALL_ROOT="${ATOMY_TOOLKIT_INSTALL_ROOT:-$HOME/atomy-toolkit}"
 CODING_TOOL="${ATOMY_TOOLKIT_CODING_TOOL:-codex}"
 IDE_TOOL="${ATOMY_TOOLKIT_IDE_TOOL:-skip}"

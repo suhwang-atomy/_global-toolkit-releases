@@ -3,7 +3,7 @@ $ErrorActionPreference = "Stop"
 # An explicit environment override wins; otherwise use the pinned public
 # v0.4.0 wheel and its release checksum.
 $WheelUrl = $env:ATOMY_TOOLKIT_WHEEL_URL; if (-not $WheelUrl) { $WheelUrl = "https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.0/atomy_toolkit_lib-0.4.0-py3-none-any.whl" }
-$WheelSha = $env:ATOMY_TOOLKIT_WHEEL_SHA256; if (-not $WheelSha) { $WheelSha = "6a9097f2be443192db66fa5f038b435b391549760641878db109525330321297" }
+$WheelSha = $env:ATOMY_TOOLKIT_WHEEL_SHA256; if (-not $WheelSha) { $WheelSha = "13743ccc648631298c9a87449fef30134cb6036f64dfde456a997d4eea694834" }
 $Root = if ($env:ATOMY_TOOLKIT_INSTALL_ROOT) { $env:ATOMY_TOOLKIT_INSTALL_ROOT } else { Join-Path $HOME "atomy-toolkit" }
 $CodingTool = if ($env:ATOMY_TOOLKIT_CODING_TOOL) { $env:ATOMY_TOOLKIT_CODING_TOOL } else { "codex" }
 $IdeTool = if ($env:ATOMY_TOOLKIT_IDE_TOOL) { $env:ATOMY_TOOLKIT_IDE_TOOL } else { "skip" }
@@ -21,6 +21,23 @@ function Test-PyOk([string]$exe) {
   if (-not $cmd) { return $false }
   & $cmd.Source -c "import sys; raise SystemExit(0 if sys.version_info[:2] >= (3,12) else 1)" 2>$null
   return ($LASTEXITCODE -eq 0)
+}
+
+function Invoke-NativeChecked {
+  param(
+    [Parameter(Mandatory = $true)]
+    [string]$Executable,
+    [Parameter(Mandatory = $true)]
+    [string[]]$ArgumentList,
+    [Parameter(Mandatory = $true)]
+    [string]$FailureMessage
+  )
+
+  & $Executable @ArgumentList
+  $exitCode = $LASTEXITCODE
+  if ($exitCode -ne 0) {
+    throw "$FailureMessage (exit $exitCode)"
+  }
 }
 
 # --- Resolve a Python >= 3.12. The wheel is ALWAYS installed into an isolated
@@ -50,7 +67,10 @@ if ($basePy) {
     throw "Python 3.12+ not found and uv is not installed; refusing unverified automatic provisioning. $pythonInstallHelp"
   }
   Write-Host "Provisioning Python 3.12 via uv (venv: $venvDir)..."
-  & $uv venv --python 3.12 $venvDir
+  Invoke-NativeChecked `
+    -Executable $uv `
+    -ArgumentList @("venv", "--python", "3.12", $venvDir) `
+    -FailureMessage "failed to create isolated venv with uv"
   $runPy = Join-Path $venvDir "Scripts\python.exe"
   $useUv = $true
 }
@@ -80,19 +100,25 @@ try {
 
   # --- Install the wheel into the isolated venv. system-site / --user 금지. ---
   if ($useUv) {
-    & $uv pip install --python $runPy $wheel
+    Invoke-NativeChecked `
+      -Executable $uv `
+      -ArgumentList @("pip", "install", "--python", $runPy, $wheel) `
+      -FailureMessage "failed to install Atomy Toolkit wheel with uv"
     $venvPy = $runPy
   } else {
-    & $basePy -m venv $venvDir
+    Invoke-NativeChecked `
+      -Executable $basePy `
+      -ArgumentList @("-m", "venv", $venvDir) `
+      -FailureMessage "failed to create isolated venv"
     $venvPy = Join-Path $venvDir "Scripts\python.exe"
-    & $venvPy -m pip install --upgrade "pip>=26.1.2,<27"
-    if ($LASTEXITCODE -ne 0) {
-      throw "failed to upgrade pip in isolated venv"
-    }
-    & $venvPy -m pip install $wheel
-    if ($LASTEXITCODE -ne 0) {
-      throw "failed to install Atomy Toolkit wheel"
-    }
+    Invoke-NativeChecked `
+      -Executable $venvPy `
+      -ArgumentList @("-m", "pip", "install", "--upgrade", "pip>=26.1.2,<27") `
+      -FailureMessage "failed to upgrade pip in isolated venv"
+    Invoke-NativeChecked `
+      -Executable $venvPy `
+      -ArgumentList @("-m", "pip", "install", $wheel) `
+      -FailureMessage "failed to install Atomy Toolkit wheel"
   }
 
   # Warn on a stale 'atomy-toolkit' shadow, then drop a stable shim that points
@@ -107,7 +133,20 @@ try {
   $shim = Join-Path $shimDir "atomy-toolkit.cmd"
   Set-Content -Path $shim -Value "@echo off`r`n`"$venvExe`" %*" -Encoding ascii
 
-  & $venvPy -m atomy_toolkit.cli self-install --root $Root --coding-tool $CodingTool --ide-tool $IdeTool
+  Invoke-NativeChecked `
+    -Executable $venvPy `
+    -ArgumentList @(
+      "-m",
+      "atomy_toolkit.cli",
+      "self-install",
+      "--root",
+      $Root,
+      "--coding-tool",
+      $CodingTool,
+      "--ide-tool",
+      $IdeTool
+    ) `
+    -FailureMessage "failed to configure Atomy Toolkit installation"
   Write-Host "Done. Atomy Toolkit installed to $Root (venv: $venvDir)"
   Write-Host "Ensure $shimDir is on PATH (shim: $shim)."
 } finally {

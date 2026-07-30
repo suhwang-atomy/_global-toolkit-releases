@@ -5,7 +5,7 @@ English | [한국어](PATCH_NOTES.ko.md)
 - **Status:** Released
 - **Release date:** 2026-07-30
 - **Comparison baseline:** Public `v0.3.1` (2026-06-15)
-- **Source commit:** `30c7e26a9a023c598a498b24157c418ed660e4fe`
+- **Source commit:** `59a3f49dee8977edb70ff8a2f3976db9e1633d99`
 
 There is no public Toolkit `v1.0.0` release in this repository. The historical
 `1.0.0` value belongs to cascade metadata, not the public package version.
@@ -66,6 +66,9 @@ cascade operation and automatic repair of damaged metadata are not provided.
   real symbols; low-confidence or tied candidates remain unlinked.
 - Added a self-contained offline Graph Report with scorecard, narrative,
   structure map, evidence appendix, and an approval-based judge view.
+- Pinned Playwright `1.62.0` as a direct Graph Report development dependency.
+  Ubuntu CI runs Chromium browser checks; Playwright is excluded from the
+  runtime wheel.
 - Removed the installed MPL dependency path from Graph Report.
 - Generated third-party notices cover exactly 35 runtime-bundled package
   records. Their licenses are MIT, ISC, or BSD-3-Clause; installed
@@ -207,11 +210,12 @@ The first full real overnight run and next-morning review remain pending.
 
 | Item | Value |
 |---|---|
-| Source commit | `30c7e26a9a023c598a498b24157c418ed660e4fe` |
-| `atomy_toolkit_lib-0.4.0-py3-none-any.whl` SHA256 | `6a9097f2be443192db66fa5f038b435b391549760641878db109525330321297` |
-| `SHA256.txt` SHA256 | `d9152e55afb076fd082fbfa4e351b67c31d86730cb2121f5899ecb0a10d25847` |
-| `install-cli.sh` SHA256 | `c0f69359660310a6baeecfdc338eaecce0669a56e097a6f3c4da57653d58923c` |
-| `install-cli.ps1` SHA256 | `b986da519b3b04725895aa82a02a03de64e802ed52db8ada98bc5aea1ca3a1ea` |
+| Source commit | `59a3f49dee8977edb70ff8a2f3976db9e1633d99` |
+| Cascade master metadata | `1.1.3` |
+| `atomy_toolkit_lib-0.4.0-py3-none-any.whl` SHA256 | `13743ccc648631298c9a87449fef30134cb6036f64dfde456a997d4eea694834` |
+| `SHA256.txt` SHA256 | `536e23217ab5216874277b9bc5a7f787065786645a4aacf50cfbf8b13ad02375` |
+| `install-cli.sh` SHA256 | `1c705d7cc4c9337ff05e7ea9335980cd745fb72f3f149b5c20023f6f826b33ae` |
+| `install-cli.ps1` SHA256 | `dd9af81d6f4705d765d461798cbe14b16ed9af84da4cb9a1712a2d9572657d34` |
 
 Release verification covers the exact source commit and these four public
 assets. See the [public install guide](docs/reference/PUBLIC_RELEASE_INSTALL_GUIDE.md)

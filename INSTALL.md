@@ -26,14 +26,14 @@ prints official installation links.
 
 ```bash
 curl -fL -o install-cli.sh https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.0/install-cli.sh
-echo "c0f69359660310a6baeecfdc338eaecce0669a56e097a6f3c4da57653d58923c  install-cli.sh" | sha256sum -c -
+echo "1c705d7cc4c9337ff05e7ea9335980cd745fb72f3f149b5c20023f6f826b33ae  install-cli.sh" | sha256sum -c -
 sh install-cli.sh
 ```
 
 On macOS, replace the verification line with:
 
 ```bash
-echo "c0f69359660310a6baeecfdc338eaecce0669a56e097a6f3c4da57653d58923c  install-cli.sh" | shasum -a 256 -c -
+echo "1c705d7cc4c9337ff05e7ea9335980cd745fb72f3f149b5c20023f6f826b33ae  install-cli.sh" | shasum -a 256 -c -
 ```
 
 <!-- markdownlint-enable MD013 -->
@@ -44,7 +44,7 @@ echo "c0f69359660310a6baeecfdc338eaecce0669a56e097a6f3c4da57653d58923c  install-
 
 ```powershell
 Invoke-WebRequest -Uri https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.0/install-cli.ps1 -OutFile install-cli.ps1
-$expected = "b986da519b3b04725895aa82a02a03de64e802ed52db8ada98bc5aea1ca3a1ea"
+$expected = "dd9af81d6f4705d765d461798cbe14b16ed9af84da4cb9a1712a2d9572657d34"
 $actual = (Get-FileHash .\install-cli.ps1 -Algorithm SHA256).Hash.ToLowerInvariant()
 if ($actual -ne $expected) { throw "Installer SHA256 mismatch" }
 & .\install-cli.ps1
@@ -58,7 +58,7 @@ if ($actual -ne $expected) { throw "Installer SHA256 mismatch" }
 2. Downloads the pinned
    `atomy_toolkit_lib-0.4.0-py3-none-any.whl`.
 3. Verifies the wheel against
-   `6a9097f2be443192db66fa5f038b435b391549760641878db109525330321297`.
+   `13743ccc648631298c9a87449fef30134cb6036f64dfde456a997d4eea694834`.
 4. Installs into the isolated `atomy-toolkit/.venv`.
 5. Runs `atomy-toolkit self-install`.
 
