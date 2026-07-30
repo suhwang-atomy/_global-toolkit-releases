@@ -171,7 +171,7 @@ Implemented:
 
 The intended host is a capability-checked device with the Toolkit installed,
 such as a workstation left on overnight. It is not an operating-server feature.
-The first full real overnight run and next-morning review remain pending.
+The first full real overnight run and next-morning review are complete.
 
 ### Adapter and skill-lifecycle limits
 
