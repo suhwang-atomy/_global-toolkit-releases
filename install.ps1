@@ -1,126 +1,91 @@
 $ErrorActionPreference = "Stop"
 
-$ReleaseRepo = if ($env:ATOMY_TOOLKIT_RELEASE_REPO) { $env:ATOMY_TOOLKIT_RELEASE_REPO } else { "suhwang-atomy/_global-toolkit-releases" }
+# An explicit environment override wins; otherwise use the pinned public
+# v0.4.0 wheel and its release checksum.
+$WheelUrl = $env:ATOMY_TOOLKIT_WHEEL_URL; if (-not $WheelUrl) { $WheelUrl = "https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.0/atomy_toolkit_lib-0.4.0-py3-none-any.whl" }
+$WheelSha = $env:ATOMY_TOOLKIT_WHEEL_SHA256; if (-not $WheelSha) { $WheelSha = "13743ccc648631298c9a87449fef30134cb6036f64dfde456a997d4eea694834" }
 $Root = if ($env:ATOMY_TOOLKIT_INSTALL_ROOT) { $env:ATOMY_TOOLKIT_INSTALL_ROOT } else { Join-Path $HOME "atomy-toolkit" }
 $CodingTool = if ($env:ATOMY_TOOLKIT_CODING_TOOL) { $env:ATOMY_TOOLKIT_CODING_TOOL } else { "codex" }
 $IdeTool = if ($env:ATOMY_TOOLKIT_IDE_TOOL) { $env:ATOMY_TOOLKIT_IDE_TOOL } else { "skip" }
 
-function Test-Python312 {
-  param([string]$PythonPath)
-  if (-not $PythonPath) { return $false }
-  try {
-    & $PythonPath -c "import sys; raise SystemExit(0 if sys.version_info >= (3, 12) else 1)" | Out-Null
-    return $LASTEXITCODE -eq 0
-  } catch {
-    return $false
-  }
+if (-not $WheelUrl) {
+  throw "wheel URL not set (set ATOMY_TOOLKIT_WHEEL_URL)."
+}
+if ($WheelSha -notmatch "^[0-9a-fA-F]{64}$") {
+  throw "wheel SHA256 must contain exactly 64 hexadecimal characters."
 }
 
-function Find-Python312 {
-  if ($env:PYTHON -and (Test-Python312 $env:PYTHON)) {
-    return $env:PYTHON
-  }
-  $cmd = Get-Command python -ErrorAction SilentlyContinue
-  if ($cmd -and (Test-Python312 $cmd.Source)) {
-    return $cmd.Source
-  }
-  $cmd = Get-Command python3 -ErrorAction SilentlyContinue
-  if ($cmd -and (Test-Python312 $cmd.Source)) {
-    return $cmd.Source
-  }
-  return $null
+function Test-PyOk([string]$exe) {
+  if (-not $exe) { return $false }
+  $cmd = Get-Command $exe -ErrorAction SilentlyContinue
+  if (-not $cmd) { return $false }
+  & $cmd.Source -c "import sys; raise SystemExit(0 if sys.version_info[:2] >= (3,12) else 1)" 2>$null
+  return ($LASTEXITCODE -eq 0)
 }
 
-function Get-TextFromUrl {
-  param([string]$Url)
-  $content = (Invoke-WebRequest -UseBasicParsing -Uri $Url).Content
-  if ($content -is [byte[]]) {
-    return [System.Text.Encoding]::UTF8.GetString($content)
-  }
-  return [string]$content
-}
-
-function Save-Url {
+function Invoke-NativeChecked {
   param(
-    [string]$Url,
-    [string]$OutFile
+    [Parameter(Mandatory = $true)]
+    [string]$Executable,
+    [Parameter(Mandatory = $true)]
+    [string[]]$ArgumentList,
+    [Parameter(Mandatory = $true)]
+    [string]$FailureMessage
   )
-  Invoke-WebRequest -UseBasicParsing -Uri $Url -OutFile $OutFile
+
+  & $Executable @ArgumentList
+  $exitCode = $LASTEXITCODE
+  if ($exitCode -ne 0) {
+    throw "$FailureMessage (exit $exitCode)"
+  }
 }
 
-function Install-UvPython {
-  $uv = (Get-Command uv -ErrorAction SilentlyContinue).Source
+# --- Resolve a Python >= 3.12. The wheel is ALWAYS installed into an isolated
+#     venv ($Root\.venv) — never system-site / --user (PEP 668 + editable shadow). ---
+$venvDir = Join-Path $Root ".venv"
+$basePy = $null   # system interpreter that bootstraps the venv (uv 미사용 경로)
+$runPy = $null    # interpreter available NOW for the download/sha helpers
+$useUv = $false
+$uv = $null
+$pythonInstallHelp = "Install Python 3.12+ from https://www.python.org/downloads/. Alternatively, install uv separately using its official instructions at https://docs.astral.sh/uv/getting-started/installation/, then ensure uv is on PATH or set ATOMY_TOOLKIT_UV_BIN and rerun this installer."
+
+if ($env:ATOMY_TOOLKIT_FORCE_UV -ne "1") {
+  foreach ($cand in @($env:PYTHON, "python", "python3")) {
+    if (Test-PyOk $cand) { $basePy = (Get-Command $cand).Source; break }
+  }
+}
+
+if ($basePy) {
+  $runPy = $basePy
+  Write-Host "Isolated venv target: $venvDir (system Python $basePy)"
+} else {
+  if ($env:ATOMY_TOOLKIT_NO_UV -eq "1") {
+    throw "Python 3.12+ not found and uv provisioning is disabled. $pythonInstallHelp"
+  }
+  $uv = if ($env:ATOMY_TOOLKIT_UV_BIN) { $env:ATOMY_TOOLKIT_UV_BIN } else { (Get-Command uv -ErrorAction SilentlyContinue).Source }
   if (-not $uv) {
-    Write-Host "Installing uv to provision Python 3.12..."
-    irm https://astral.sh/uv/install.ps1 | iex
-    $uv = (Get-Command uv -ErrorAction SilentlyContinue).Source
+    throw "Python 3.12+ not found and uv is not installed; refusing unverified automatic provisioning. $pythonInstallHelp"
   }
-  if (-not $uv) {
-    $candidate = Join-Path $HOME ".local/bin/uv.exe"
-    if (Test-Path $candidate) { $uv = $candidate }
-  }
-  if (-not $uv) {
-    throw "uv installation finished but uv was not found."
-  }
-  & $uv python install 3.12
-  return (& $uv python find 3.12).Trim()
+  Write-Host "Provisioning Python 3.12 via uv (venv: $venvDir)..."
+  Invoke-NativeChecked `
+    -Executable $uv `
+    -ArgumentList @("venv", "--python", "3.12", $venvDir) `
+    -FailureMessage "failed to create isolated venv with uv"
+  $runPy = Join-Path $venvDir "Scripts\python.exe"
+  $useUv = $true
 }
 
-$py = Find-Python312
-if (-not $py) {
-  $py = Install-UvPython
-}
-if (-not (Test-Python312 $py)) {
-  throw "Python 3.12+ required."
-}
-
-$WheelUrl = $env:ATOMY_TOOLKIT_WHEEL_URL
-$WheelSha = $env:ATOMY_TOOLKIT_WHEEL_SHA256
-
-if (-not $WheelUrl -or -not $WheelSha) {
-  $release = Invoke-RestMethod -Uri "https://api.github.com/repos/$ReleaseRepo/releases/latest"
-  $wheelAsset = $release.assets | Where-Object {
-    $_.name -like "atomy_toolkit_lib-*.whl"
-  } | Select-Object -First 1
-  $shaAsset = $release.assets | Where-Object {
-    $_.name -eq "SHA256.txt"
-  } | Select-Object -First 1
-  if (-not $shaAsset) {
-    $shaAsset = $release.assets | Where-Object {
-      $_.name -eq "SHA256SUMS.txt"
-    } | Select-Object -First 1
-  }
-  if (-not $wheelAsset -or -not $shaAsset) {
-    throw "latest release is missing atomy_toolkit_lib wheel or SHA256 asset"
-  }
-  $WheelUrl = $wheelAsset.browser_download_url
-  $shaText = Get-TextFromUrl $shaAsset.browser_download_url
-  $wheelLine = ($shaText -split "`r?`n") | Where-Object { $_ -like "*$($wheelAsset.name)*" } | Select-Object -First 1
-  if ($wheelLine) {
-    $match = [regex]::Match($wheelLine, "\b[0-9a-fA-F]{64}\b")
-    if ($match.Success) {
-      $WheelSha = $match.Value.ToLowerInvariant()
-    }
-  }
-  if (-not $WheelSha) {
-    $matches = [regex]::Matches($shaText, "\b[0-9a-fA-F]{64}\b")
-    if ($matches.Count -eq 1) {
-      $WheelSha = $matches[0].Value.ToLowerInvariant()
-    } else {
-      throw "SHA256 asset does not contain a unique hash for $($wheelAsset.name)"
-    }
-  }
-}
-
-$tmp = New-Item -ItemType Directory -Path (Join-Path $env:TEMP ([guid]::NewGuid()))
+# --- Download the wheel (preserve its real PEP 427 filename) + verify SHA256. ---
+# $env:TEMP is Windows-only; use a cross-platform temp base so pwsh on Linux/macOS works.
+$tmpBase = if ($env:TEMP) { $env:TEMP } else { [System.IO.Path]::GetTempPath() }
+$tmp = New-Item -ItemType Directory -Path (Join-Path $tmpBase ([guid]::NewGuid()))
 try {
   $wheelName = Split-Path -Leaf (([Uri]$WheelUrl).LocalPath)
   $wheel = Join-Path $tmp $wheelName
   if ($WheelUrl.StartsWith("file://")) {
-    $uri = [Uri]$WheelUrl
-    Copy-Item -LiteralPath $uri.LocalPath -Destination $wheel
+    Copy-Item -LiteralPath ([Uri]$WheelUrl).LocalPath -Destination $wheel
   } else {
-    Save-Url $WheelUrl $wheel
+    Invoke-WebRequest -Uri $WheelUrl -OutFile $wheel
   }
 
   $actual = (Get-FileHash $wheel -Algorithm SHA256).Hash.ToLowerInvariant()
@@ -129,26 +94,61 @@ try {
   }
 
   if ($env:ATOMY_TOOLKIT_DRY_RUN -eq "1") {
-    Write-Host "dry-run ok (python=$py, sha verified)"
+    Write-Host "dry-run ok (python resolved, sha verified, uv=$useUv)"
     exit 0
   }
 
-  New-Item -ItemType Directory -Force -Path $Root | Out-Null
-  $venvDir = Join-Path $Root ".venv"
-  & $py -m venv $venvDir
-  $venvPy = Join-Path $venvDir "Scripts\python.exe"
-  if (-not (Test-Path $venvPy)) {
-    throw "virtual environment Python was not created at $venvPy"
+  # --- Install the wheel into the isolated venv. system-site / --user 금지. ---
+  if ($useUv) {
+    Invoke-NativeChecked `
+      -Executable $uv `
+      -ArgumentList @("pip", "install", "--python", $runPy, $wheel) `
+      -FailureMessage "failed to install Atomy Toolkit wheel with uv"
+    $venvPy = $runPy
+  } else {
+    Invoke-NativeChecked `
+      -Executable $basePy `
+      -ArgumentList @("-m", "venv", $venvDir) `
+      -FailureMessage "failed to create isolated venv"
+    $venvPy = Join-Path $venvDir "Scripts\python.exe"
+    Invoke-NativeChecked `
+      -Executable $venvPy `
+      -ArgumentList @("-m", "pip", "install", "--upgrade", "pip>=26.1.2,<27") `
+      -FailureMessage "failed to upgrade pip in isolated venv"
+    Invoke-NativeChecked `
+      -Executable $venvPy `
+      -ArgumentList @("-m", "pip", "install", $wheel) `
+      -FailureMessage "failed to install Atomy Toolkit wheel"
   }
 
-  & $venvPy -m pip --version | Out-Null
-  if ($LASTEXITCODE -ne 0) {
-    & $venvPy -m ensurepip --upgrade
+  # Warn on a stale 'atomy-toolkit' shadow, then drop a stable shim that points
+  # at the venv entry point (%LOCALAPPDATA%\atomy-toolkit\bin\atomy-toolkit.cmd).
+  $venvExe = Join-Path $venvDir "Scripts\atomy-toolkit.exe"
+  $existing = (Get-Command atomy-toolkit -ErrorAction SilentlyContinue).Source
+  if ($existing -and $existing -ne $venvExe) {
+    Write-Host "WARNING: existing 'atomy-toolkit' on PATH ($existing) may shadow this install; replacing the shim to point at the venv."
   }
-  & $venvPy -m pip install --upgrade pip | Out-Null
-  & $venvPy -m pip install --upgrade $wheel
-  & $venvPy -m atomy_toolkit.cli self-install --root $Root --coding-tool $CodingTool --ide-tool $IdeTool
-  Write-Host "Done. Atomy Toolkit installed to $Root"
+  $shimDir = Join-Path $env:LOCALAPPDATA "atomy-toolkit\bin"
+  New-Item -ItemType Directory -Force -Path $shimDir | Out-Null
+  $shim = Join-Path $shimDir "atomy-toolkit.cmd"
+  Set-Content -Path $shim -Value "@echo off`r`n`"$venvExe`" %*" -Encoding ascii
+
+  Invoke-NativeChecked `
+    -Executable $venvPy `
+    -ArgumentList @(
+      "-m",
+      "atomy_toolkit.cli",
+      "self-install",
+      "--root",
+      $Root,
+      "--coding-tool",
+      $CodingTool,
+      "--ide-tool",
+      $IdeTool
+    ) `
+    -FailureMessage "failed to configure Atomy Toolkit installation"
+  Write-Host "Done. Atomy Toolkit installed to $Root (venv: $venvDir)"
+  Write-Host "Ensure $shimDir is on PATH (shim: $shim)."
 } finally {
   Remove-Item -Recurse -Force $tmp
 }
