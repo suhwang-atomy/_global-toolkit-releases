@@ -145,8 +145,9 @@ atomy-toolkit memtemple --help
 ```
 
 후보 전용 command와 workflow 표면은 패치 노트에 설명했습니다. 새 release asset을
-발행하기 전에는 공개 installer로 받을 수 없습니다. 특히 `atomy-toolkit graph`와
-`/delegate`는 공개 `v0.3.1` wheel에 없습니다.
+발행하기 전에는 공개 installer로 받을 수 없습니다. 특히 `atomy-toolkit graph`는 공개
+`v0.3.1` wheel에 없습니다. 당시에도 이전 형태의 `/delegate` workflow는 있었지만,
+후보의 봉인된 감독형 야간 실행 기능은 포함되지 않았습니다.
 
 ## 버전 표기
 

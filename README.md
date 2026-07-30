@@ -157,8 +157,9 @@ atomy-toolkit memtemple --help
 
 Candidate-only command and workflow surfaces are described in the patch notes.
 They are not available from the public installer until new release assets are
-published. In particular, `atomy-toolkit graph` and `/delegate` are not in the
-public `v0.3.1` wheel.
+published. In particular, `atomy-toolkit graph` is not in the public `v0.3.1`
+wheel. That release already included an earlier `/delegate` workflow, but not
+the candidate's sealed, supervised overnight execution.
 
 ## Version terminology
 
