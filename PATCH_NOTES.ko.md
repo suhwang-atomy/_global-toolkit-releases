@@ -144,8 +144,6 @@ production topology의 일부가 아닙니다.
 최초 외부 draft-PR live E2E와 Research Relay 예약 실행은 남아 있습니다. 이 실험들은
 지원되는 기본 설치 flow에 포함되지 않습니다.
 
-## Experimental
-
 ### `/delegate` 감독형 야간 자동화
 
 구현된 항목:
@@ -160,7 +158,10 @@ production topology의 일부가 아닙니다.
 
 의도한 host는 Toolkit이 설치되고 capability 검사를 통과한 장치입니다. 예를 들어
 퇴근할 때 켜 둔 workstation을 사용할 수 있으며 운영 서버 기능이 아닙니다. 첫 실제
-full-night 실행과 다음 날 검수를 완료했습니다.
+full-night 실행과 다음 날 검수를 완료했습니다. 다만 대기·백스톱 관련 설정값은 아직
+잠정값이라 실측 데이터로 교체하는 일이 남아 있어, 검증 완료가 아니라 Preview로 둡니다.
+
+## Experimental
 
 ### Adapter와 skill-lifecycle 제약
 

@@ -155,8 +155,6 @@ production enforcement were not validated.
 The first live external draft-PR E2E and scheduled Research Relay run remain
 pending. These labs are not part of the supported default installation flow.
 
-## Experimental
-
 ### `/delegate` supervised overnight automation
 
 Implemented:
@@ -171,7 +169,11 @@ Implemented:
 
 The intended host is a capability-checked device with the Toolkit installed,
 such as a workstation left on overnight. It is not an operating-server feature.
-The first full real overnight run and next-morning review are complete.
+The first full real overnight run and next-morning review are complete. Its
+timing and back-stop settings are still provisional and pending replacement
+with measured data, so the feature stays under Preview rather than Verified.
+
+## Experimental
 
 ### Adapter and skill-lifecycle limits
 
