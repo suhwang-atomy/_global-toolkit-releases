@@ -117,8 +117,8 @@ atomy-toolkit doctor
 atomy-toolkit install ./my-project
 ```
 
-이러면 `my-project` 폴더에 AI가 참고할 규칙과 기록 공간이 자동으로 만들어집니다.
-이후 그 폴더에서 Claude Code를 열고 `/rpi` 라고 쳐보세요. 조사 → 계획 → 구현 순서로
+이러면 `atomy-toolkit` 폴더에 AI가 참고할 규칙과 기록 공간이 자동으로 만들어집니다.
+이후 그 폴더에서 Claude Code를 열고 `/rpi` 라고 쳐보세요(OPEN AI Codex는 $rpi). 조사 → 계획 → 구현 순서로
 일이 진행됩니다.
 
 더 자세한 설치 옵션은 [INSTALL.md](INSTALL.md), 전체 검증 절차는
