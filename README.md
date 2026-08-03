@@ -23,7 +23,7 @@ Install Atomy Toolkit into a project once, and:
 
 ## Current version
 
-- Latest public release: **[v0.4.3](https://github.com/suhwang-atomy/_global-toolkit-releases/releases/tag/v0.4.3)** (2026-08-03)
+- Latest public release: **[v0.4.4](https://github.com/suhwang-atomy/_global-toolkit-releases/releases/tag/v0.4.4)** (2026-08-03)
 - The additions after `v0.4.0` are summarized below. For the full `v0.4.0` baseline, see the [English patch notes](PATCH_NOTES.md) or [한국어](PATCH_NOTES.ko.md).
 
 This repository holds the installers and the docs only. The program's source code is private.
@@ -56,8 +56,8 @@ found, or the number is lower than 3.12, install it from
 **Windows (PowerShell)**
 
 ```powershell
-Invoke-WebRequest -Uri https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.3/install-cli.ps1 -OutFile install-cli.ps1
-$expected = "4cc6ac688046e25f84aab71f426a15c3e1ce46ca76a77811624880a3d215b1df"
+Invoke-WebRequest -Uri https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.4/install-cli.ps1 -OutFile install-cli.ps1
+$expected = "e107934e55a7799a49b4769f1602aba0e831af18dba2e9410d5f02e06e0240b9"
 $actual = (Get-FileHash .\install-cli.ps1 -Algorithm SHA256).Hash.ToLowerInvariant()
 if ($actual -ne $expected) { throw "Installer SHA256 mismatch" }
 & .\install-cli.ps1
@@ -66,16 +66,16 @@ if ($actual -ne $expected) { throw "Installer SHA256 mismatch" }
 **macOS**
 
 ```bash
-curl -fL -o install-cli.sh https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.3/install-cli.sh
-echo "9b44f63f171fe2fcb7c8e018030780084de41104f10dcb9b51c6e8f2ddba317c  install-cli.sh" | shasum -a 256 -c -
+curl -fL -o install-cli.sh https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.4/install-cli.sh
+echo "6a79a6bfb73a73c6ee4d9f9d8e12ec0d0cecf6a64b845275b36ac2b524bc7e99  install-cli.sh" | shasum -a 256 -c -
 sh install-cli.sh
 ```
 
 **Linux**
 
 ```bash
-curl -fL -o install-cli.sh https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.3/install-cli.sh
-echo "9b44f63f171fe2fcb7c8e018030780084de41104f10dcb9b51c6e8f2ddba317c  install-cli.sh" | sha256sum -c -
+curl -fL -o install-cli.sh https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.4/install-cli.sh
+echo "6a79a6bfb73a73c6ee4d9f9d8e12ec0d0cecf6a64b845275b36ac2b524bc7e99  install-cli.sh" | sha256sum -c -
 sh install-cli.sh
 ```
 
@@ -128,7 +128,7 @@ see the [public install guide](docs/reference/PUBLIC_RELEASE_INSTALL_GUIDE.md).
 
 ---
 
-## What's better in v0.4.3
+## What's better in v0.4.4
 
 Every feature is labeled with **how far it has actually been proven**.
 
@@ -138,6 +138,28 @@ Every feature is labeled with **how far it has actually been proven**.
 | 🟡 **Preview** | It has been used for real, but it's still being refined. Keep an eye on it. |
 | 🧪 **Experimental** | Not yet used for real work. Don't rely on it for anything important. |
 
+### ✅ Updating the Toolkit now updates the projects it knows
+
+When you install a newer Toolkit version, it now refreshes the Toolkit files in projects
+you have already connected. You no longer need to update Cascade first or run a separate
+command for every project. Your own edits are kept, and a backup is made before a managed
+file changes.
+
+The Toolkit only checks projects it has recorded on this computer. It does not search your
+whole disk, and the list is never sent to a server. Projects made with `/new` or
+`atomy-toolkit install` are recorded automatically.
+
+If you brought the Toolkit into an existing project by asking an AI to copy it, record that
+project once:
+
+```bash
+atomy-toolkit adopt ./my-existing-project
+atomy-toolkit projects list
+```
+
+`adopt` records the project and brings its Toolkit files up to date. On Windows, v0.4.4
+also fixes the command path during installation, so `atomy-toolkit` works in a new terminal.
+
 ### ✅ Keep the product guide beside the product (Claude Code: `/plandoc`, Codex: `$plandoc`)
 
 `plandoc` creates and maintains a set of plain-language product documents: what the
@@ -145,7 +167,7 @@ product should do, which screens exist, how people move through them, what data 
 and what the next person needs to know. It compares those documents with the code and the
 existing plan, so missing or outdated parts are easier to spot.
 
-In v0.4.3, Codex receives `plandoc` as a proper skill. Type `$plandoc` in Codex, not
+Since v0.4.3, Codex receives `plandoc` as a proper skill. Type `$plandoc` in Codex, not
 `/prompts:plandoc`. After installing or updating, restart Codex or open a new conversation
 so the new skill appears. The Toolkit can gather the facts, but it still asks a person to
 decide what the product *should* become when the code and the written plan disagree.
@@ -221,10 +243,10 @@ isolated workspace, and in the morning a human decides `GO` or `NO-GO`.
 
 Things you shouldn't expect, written down up front.
 
-- **`atomy-toolkit update` is not a real update yet.** To bring managed files up to date, use `atomy-toolkit cascade sync`.
+- **`atomy-toolkit update` is not the installer.** Use the versioned installer above to update the Toolkit. v0.4.4 then refreshes recorded projects automatically; `atomy-toolkit cascade sync` is still available when you want to refresh one project by hand.
 - **It won't merge code on its own, write to your important branches, or deploy to a live service.**
 - **It doesn't send usage data to the cloud.** Everything runs on your machine.
-- **There's no service that processes your records on a server for you.** That's a separate idea still under consideration, and it isn't part of v0.4.3.
+- **There's no service that processes your records on a server for you.** That's a separate idea still under consideration, and it isn't part of v0.4.4.
 
 ---
 
@@ -234,6 +256,8 @@ Things you shouldn't expect, written down up front.
 atomy-toolkit --version              # check the version
 atomy-toolkit doctor                 # self-diagnose problems
 atomy-toolkit install ./my-project   # set up a project
+atomy-toolkit adopt ./old-project    # connect an existing project
+atomy-toolkit projects list          # show connected projects
 atomy-toolkit memtemple --help       # memory store
 atomy-toolkit graph --help           # see your project's shape
 ```
@@ -245,35 +269,35 @@ atomy-toolkit graph --help           # see your project's shape
 
 ### Release assets and integrity
 
-The v0.4.3 GitHub Release has exactly four assets.
+The v0.4.4 GitHub Release has exactly four assets.
 
 | Asset | SHA256 |
 |---|---|
-| `atomy_toolkit_lib-0.4.3-py3-none-any.whl` | `59501ea89ec76d2e308e458d24fae16a46aa066cd340679219aff20af0acb669` |
-| `SHA256.txt` | `bac03884ae3a43d0bc09d852d62537135a1cc26cc37aff37284e1e9dc6ae5d49` |
-| `install-cli.sh` | `9b44f63f171fe2fcb7c8e018030780084de41104f10dcb9b51c6e8f2ddba317c` |
-| `install-cli.ps1` | `4cc6ac688046e25f84aab71f426a15c3e1ce46ca76a77811624880a3d215b1df` |
+| `atomy_toolkit_lib-0.4.4-py3-none-any.whl` | `e864ed8d2e0d258452b8bc7fae26cfd37a9fd00355f5970c3f06ee8e696ffb90` |
+| `SHA256.txt` | `fb58b9f993078161bb775195881add8104e4678a2b8438baaa291eeddff48624` |
+| `install-cli.sh` | `6a79a6bfb73a73c6ee4d9f9d8e12ec0d0cecf6a64b845275b36ac2b524bc7e99` |
+| `install-cli.ps1` | `e107934e55a7799a49b4769f1602aba0e831af18dba2e9410d5f02e06e0240b9` |
 
 `SHA256.txt` contains the hashes for the wheel and the two command installers. A checksum
 file cannot contain a stable hash of itself, so the hash for `SHA256.txt` is listed
 separately in the table above.
 
 The assets are not signed. The pinned hashes above are the release integrity control.
-`.exe`, `.pkg`, `.dmg`, and `.AppImage` are not part of the official v0.4.3 distribution.
+`.exe`, `.pkg`, `.dmg`, and `.AppImage` are not part of the official v0.4.4 distribution.
 
-The bootstrap downloads only the pinned `atomy_toolkit_lib-0.4.3-py3-none-any.whl` and
+The bootstrap downloads only the pinned `atomy_toolkit_lib-0.4.4-py3-none-any.whl` and
 verifies its embedded SHA256. It then installs into an isolated virtual environment and
 runs `atomy-toolkit self-install`. It never installs into system site-packages.
 
-- release-preparation commit: `25411a96fb798de84222e09227eb39e1160daae0`
+- release-preparation commit: `65f33d6ecd84aaa4c6bdfbadcd351fe654ca5fb0`
 - Graph Report pins Playwright `1.62.0` as a direct development dependency. Playwright is
   not included in the runtime wheel.
 
 ### Version scheme
 
-A GitHub tag like `v0.4.3` is a public product release. The historical cascade metadata
+A GitHub tag like `v0.4.4` is a public product release. The historical cascade metadata
 value `1.0.0` belongs to a separate internal asset version lineage and does not mean a
-public `v1.0.0` release. The cascade master metadata in this wheel is `1.1.6`.
+public `v1.0.0` release. The cascade master metadata in this wheel is `1.1.7`.
 
 </details>
 
@@ -281,7 +305,7 @@ public `v1.0.0` release. The cascade master metadata in this wheel is `1.1.6`.
 
 ## License and privacy
 
-Atomy Toolkit v0.4.3 is distributed under the [MIT License](LICENSE). [NOTICE](NOTICE) and
+Atomy Toolkit v0.4.4 is distributed under the [MIT License](LICENSE). [NOTICE](NOTICE) and
 the [Graph Report third-party notices](THIRD_PARTY_NOTICES.md) credit the outside material
 we used.
 
