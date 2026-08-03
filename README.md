@@ -157,7 +157,8 @@ atomy-toolkit adopt ./my-existing-project
 atomy-toolkit projects list
 ```
 
-`adopt` records the project and brings its Toolkit files up to date. On Windows, v0.4.4
+`adopt` records the project. The next Toolkit installation will update it automatically.
+To update it now, run `atomy-toolkit cascade sync` from that project. On Windows, v0.4.4
 also fixes the command path during installation, so `atomy-toolkit` works in a new terminal.
 
 ### ✅ Keep the product guide beside the product (Claude Code: `/plandoc`, Codex: `$plandoc`)

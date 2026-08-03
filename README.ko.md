@@ -153,8 +153,10 @@ atomy-toolkit adopt ./기존-프로젝트
 atomy-toolkit projects list
 ```
 
-`adopt`는 그 프로젝트를 기록하고 툴킷 파일을 최신으로 맞춥니다. Windows에서는 v0.4.4부터
-설치할 때 명령 경로도 바로잡아, 새 터미널에서 `atomy-toolkit` 명령을 쓸 수 있습니다.
+`adopt`는 그 프로젝트를 목록에 기록합니다. 다음에 툴킷을 설치할 때 자동으로 갱신됩니다.
+지금 바로 맞추려면 그 프로젝트에서 `atomy-toolkit cascade sync`를 실행하세요.
+Windows에서는 v0.4.4부터 설치할 때 명령 경로도 바로잡아, 새 터미널에서
+`atomy-toolkit` 명령을 쓸 수 있습니다.
 
 ### ✅ 제품 설명서를 제품 옆에서 함께 관리합니다 (Claude Code: `/plandoc`, Codex: `$plandoc`)
 
