@@ -23,7 +23,7 @@ Install Atomy Toolkit into a project once, and:
 
 ## Current version
 
-- Latest public release: **[v0.4.4](https://github.com/suhwang-atomy/_global-toolkit-releases/releases/tag/v0.4.4)** (2026-08-03)
+- Latest public release: **[v0.4.6](https://github.com/suhwang-atomy/_global-toolkit-releases/releases/tag/v0.4.6)** (2026-08-16)
 - The additions after `v0.4.0` are summarized below. For the full `v0.4.0` baseline, see the [English patch notes](PATCH_NOTES.md) or [한국어](PATCH_NOTES.ko.md).
 
 This repository holds the installers and the docs only. The program's source code is private.
@@ -56,8 +56,8 @@ found, or the number is lower than 3.12, install it from
 **Windows (PowerShell)**
 
 ```powershell
-Invoke-WebRequest -Uri https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.4/install-cli.ps1 -OutFile install-cli.ps1
-$expected = "e107934e55a7799a49b4769f1602aba0e831af18dba2e9410d5f02e06e0240b9"
+Invoke-WebRequest -Uri https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.6/install-cli.ps1 -OutFile install-cli.ps1
+$expected = "6f0b06585e35975f073d206dd1ab7cc22cf8db2d5dffb149fa34f0c070c5ff02"
 $actual = (Get-FileHash .\install-cli.ps1 -Algorithm SHA256).Hash.ToLowerInvariant()
 if ($actual -ne $expected) { throw "Installer SHA256 mismatch" }
 & .\install-cli.ps1
@@ -66,16 +66,16 @@ if ($actual -ne $expected) { throw "Installer SHA256 mismatch" }
 **macOS**
 
 ```bash
-curl -fL -o install-cli.sh https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.4/install-cli.sh
-echo "6a79a6bfb73a73c6ee4d9f9d8e12ec0d0cecf6a64b845275b36ac2b524bc7e99  install-cli.sh" | shasum -a 256 -c -
+curl -fL -o install-cli.sh https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.6/install-cli.sh
+echo "0e8cd2571383c748b5c2e788aa14dbeecb95c405e7d5db1b5415212e8528278c  install-cli.sh" | shasum -a 256 -c -
 sh install-cli.sh
 ```
 
 **Linux**
 
 ```bash
-curl -fL -o install-cli.sh https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.4/install-cli.sh
-echo "6a79a6bfb73a73c6ee4d9f9d8e12ec0d0cecf6a64b845275b36ac2b524bc7e99  install-cli.sh" | sha256sum -c -
+curl -fL -o install-cli.sh https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.6/install-cli.sh
+echo "0e8cd2571383c748b5c2e788aa14dbeecb95c405e7d5db1b5415212e8528278c  install-cli.sh" | sha256sum -c -
 sh install-cli.sh
 ```
 
@@ -128,7 +128,7 @@ see the [public install guide](docs/reference/PUBLIC_RELEASE_INSTALL_GUIDE.md).
 
 ---
 
-## What's better in v0.4.4
+## What's better in v0.4.6
 
 Every feature is labeled with **how far it has actually been proven**.
 
@@ -137,6 +137,47 @@ Every feature is labeled with **how far it has actually been proven**.
 | ✅ **Verified** | It passed its tests. Go ahead and use it. |
 | 🟡 **Preview** | It has been used for real, but it's still being refined. Keep an eye on it. |
 | 🧪 **Experimental** | Not yet used for real work. Don't rely on it for anything important. |
+
+> This lists everything added since `v0.4.0`. A **⭐** marks what arrived in the last two
+> releases (`v0.4.5` and `v0.4.6`).
+
+### ⭐ ✅ Working in bursts no longer splits your day into many records
+
+If you ran a workflow several times while working on one thing, each run used to start a
+**separate work record**. Dozens piled up in a day, and at wrap-up time it was hard to tell
+which one you were actually in. Now, if today's record is still open, the Toolkit keeps
+using it. A new one starts only after you close the previous one.
+
+### ⭐ ✅ Wrapping up finishes in one go
+
+The wrap-up command now **runs to the end without stopping to ask for approval** on the
+normal path. Only surprises are raised to you. The eight follow-up chores it used to do
+alongside are automatic again — that wiring had been broken for a while, so people had to
+remember them by hand.
+
+### ⭐ ✅ It tells you when your installed guides are out of date
+
+Some guides live on your machine and **do not update automatically** when the Toolkit
+changes. The Toolkit now reports how many are stale when a workflow starts. It only reads
+and reports; it never blocks you.
+
+### ⭐ ✅ Differences now come with an explanation
+
+`atomy-toolkit verify --meaning` tells you not just *what* differs but **why it differs and
+what that difference means**. Useful when the raw difference alone isn't enough to decide.
+
+### ⭐ ✅ Products without a screen can be documented too
+
+The product-docs set used to assume a product with **web screens**. For products without
+them (command-line tools, batch processors), half the document set stayed blank. It now
+reads **where features start** instead of listing screens, and builds a map of how the code
+connects, kept next to the docs.
+
+### ⭐ ✅ Automated checks can no longer touch your real installation
+
+Development checks once **overwrote the actual installed Toolkit** and quietly broke it.
+Checks are now structurally confined to a temporary area. You don't use this directly, but
+it stops a broken build from being shipped.
 
 ### ✅ Updating the Toolkit now updates the projects it knows
 
@@ -247,7 +288,7 @@ Things you shouldn't expect, written down up front.
 - **`atomy-toolkit update` is not the installer.** Use the versioned installer above to update the Toolkit. v0.4.4 then refreshes recorded projects automatically; `atomy-toolkit cascade sync` is still available when you want to refresh one project by hand.
 - **It won't merge code on its own, write to your important branches, or deploy to a live service.**
 - **It doesn't send usage data to the cloud.** Everything runs on your machine.
-- **There's no service that processes your records on a server for you.** That's a separate idea still under consideration, and it isn't part of v0.4.4.
+- **There's no service that processes your records on a server for you.** That's a separate idea still under consideration, and it isn't part of v0.4.6.
 
 ---
 
@@ -270,35 +311,35 @@ atomy-toolkit graph --help           # see your project's shape
 
 ### Release assets and integrity
 
-The v0.4.4 GitHub Release has exactly four assets.
+The v0.4.6 GitHub Release has exactly four assets.
 
 | Asset | SHA256 |
 |---|---|
-| `atomy_toolkit_lib-0.4.4-py3-none-any.whl` | `e864ed8d2e0d258452b8bc7fae26cfd37a9fd00355f5970c3f06ee8e696ffb90` |
-| `SHA256.txt` | `fb58b9f993078161bb775195881add8104e4678a2b8438baaa291eeddff48624` |
-| `install-cli.sh` | `6a79a6bfb73a73c6ee4d9f9d8e12ec0d0cecf6a64b845275b36ac2b524bc7e99` |
-| `install-cli.ps1` | `e107934e55a7799a49b4769f1602aba0e831af18dba2e9410d5f02e06e0240b9` |
+| `atomy_toolkit_lib-0.4.6-py3-none-any.whl` | `5d2f807e3d2df86dee8209a9c418e1884652e6114c2c94f197e996e56a2e3377` |
+| `SHA256.txt` | `9bf831c098b1439289f85f4a155660c51208337cb56e4394bcabb5471bf07225` |
+| `install-cli.sh` | `0e8cd2571383c748b5c2e788aa14dbeecb95c405e7d5db1b5415212e8528278c` |
+| `install-cli.ps1` | `6f0b06585e35975f073d206dd1ab7cc22cf8db2d5dffb149fa34f0c070c5ff02` |
 
 `SHA256.txt` contains the hashes for the wheel and the two command installers. A checksum
 file cannot contain a stable hash of itself, so the hash for `SHA256.txt` is listed
 separately in the table above.
 
 The assets are not signed. The pinned hashes above are the release integrity control.
-`.exe`, `.pkg`, `.dmg`, and `.AppImage` are not part of the official v0.4.4 distribution.
+`.exe`, `.pkg`, `.dmg`, and `.AppImage` are not part of the official v0.4.6 distribution.
 
-The bootstrap downloads only the pinned `atomy_toolkit_lib-0.4.4-py3-none-any.whl` and
+The bootstrap downloads only the pinned `atomy_toolkit_lib-0.4.6-py3-none-any.whl` and
 verifies its embedded SHA256. It then installs into an isolated virtual environment and
 runs `atomy-toolkit self-install`. It never installs into system site-packages.
 
-- release-preparation commit: `65f33d6ecd84aaa4c6bdfbadcd351fe654ca5fb0`
+- release-preparation commit: `cbca2e9d1c7cf517006afd9e5828cf0cd96fd6e1`
 - Graph Report pins Playwright `1.62.0` as a direct development dependency. Playwright is
   not included in the runtime wheel.
 
 ### Version scheme
 
-A GitHub tag like `v0.4.4` is a public product release. The historical cascade metadata
+A GitHub tag like `v0.4.6` is a public product release. The historical cascade metadata
 value `1.0.0` belongs to a separate internal asset version lineage and does not mean a
-public `v1.0.0` release. The cascade master metadata in this wheel is `1.1.7`.
+public `v1.0.0` release. The cascade master metadata in this wheel is `1.2.2`.
 
 </details>
 
@@ -306,7 +347,7 @@ public `v1.0.0` release. The cascade master metadata in this wheel is `1.1.7`.
 
 ## License and privacy
 
-Atomy Toolkit v0.4.4 is distributed under the [MIT License](LICENSE). [NOTICE](NOTICE) and
+Atomy Toolkit v0.4.6 is distributed under the [MIT License](LICENSE). [NOTICE](NOTICE) and
 the [Graph Report third-party notices](THIRD_PARTY_NOTICES.md) credit the outside material
 we used.
 

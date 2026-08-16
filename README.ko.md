@@ -23,7 +23,7 @@ Atomy Toolkit을 프로젝트에 한 번 깔아두면:
 
 ## 지금 버전
 
-- 최신 공개 버전: **[v0.4.4](https://github.com/suhwang-atomy/_global-toolkit-releases/releases/tag/v0.4.4)** (2026-08-03)
+- 최신 공개 버전: **[v0.4.6](https://github.com/suhwang-atomy/_global-toolkit-releases/releases/tag/v0.4.6)** (2026-08-16)
 - `v0.4.0` 이후 추가된 내용은 아래에 쉽게 정리했습니다. `v0.4.0`의 전체 기준 문서는 [한국어 패치 노트](PATCH_NOTES.ko.md) 또는 [English](PATCH_NOTES.md)에서 볼 수 있습니다.
 
 이 저장소에는 설치 파일과 문서만 있습니다. 프로그램 소스 코드는 비공개입니다.
@@ -55,8 +55,8 @@ python3 --version
 **Windows (PowerShell)**
 
 ```powershell
-Invoke-WebRequest -Uri https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.4/install-cli.ps1 -OutFile install-cli.ps1
-$expected = "e107934e55a7799a49b4769f1602aba0e831af18dba2e9410d5f02e06e0240b9"
+Invoke-WebRequest -Uri https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.6/install-cli.ps1 -OutFile install-cli.ps1
+$expected = "6f0b06585e35975f073d206dd1ab7cc22cf8db2d5dffb149fa34f0c070c5ff02"
 $actual = (Get-FileHash .\install-cli.ps1 -Algorithm SHA256).Hash.ToLowerInvariant()
 if ($actual -ne $expected) { throw "Installer SHA256 mismatch" }
 & .\install-cli.ps1
@@ -65,16 +65,16 @@ if ($actual -ne $expected) { throw "Installer SHA256 mismatch" }
 **macOS**
 
 ```bash
-curl -fL -o install-cli.sh https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.4/install-cli.sh
-echo "6a79a6bfb73a73c6ee4d9f9d8e12ec0d0cecf6a64b845275b36ac2b524bc7e99  install-cli.sh" | shasum -a 256 -c -
+curl -fL -o install-cli.sh https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.6/install-cli.sh
+echo "0e8cd2571383c748b5c2e788aa14dbeecb95c405e7d5db1b5415212e8528278c  install-cli.sh" | shasum -a 256 -c -
 sh install-cli.sh
 ```
 
 **Linux**
 
 ```bash
-curl -fL -o install-cli.sh https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.4/install-cli.sh
-echo "6a79a6bfb73a73c6ee4d9f9d8e12ec0d0cecf6a64b845275b36ac2b524bc7e99  install-cli.sh" | sha256sum -c -
+curl -fL -o install-cli.sh https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.6/install-cli.sh
+echo "0e8cd2571383c748b5c2e788aa14dbeecb95c405e7d5db1b5415212e8528278c  install-cli.sh" | sha256sum -c -
 sh install-cli.sh
 ```
 
@@ -126,7 +126,7 @@ atomy-toolkit install ./my-project
 
 ---
 
-## v0.4.4에서 좋아진 것
+## v0.4.6에서 좋아진 것
 
 기능마다 **어디까지 확인됐는지**를 솔직하게 표시했습니다.
 
@@ -135,6 +135,45 @@ atomy-toolkit install ./my-project
 | ✅ **검증 완료** | 테스트를 통과했습니다. 편하게 쓰세요. |
 | 🟡 **미리보기** | 실제로 써봤지만 아직 다듬는 중입니다. 확인해가며 쓰세요. |
 | 🧪 **실험 중** | 첫 실전 사용이 아직입니다. 중요한 일에는 쓰지 마세요. |
+
+> 아래는 `v0.4.0` 이후 쌓인 내용을 한 번에 정리한 것입니다. **⭐ 표시**는 지난 두 판
+> (`v0.4.5`·`v0.4.6`)에서 새로 들어온 것입니다.
+
+### ⭐ ✅ 하루에 여러 번 일해도 기록이 하나로 남습니다
+
+한 가지 일을 하면서 워크플로를 여러 번 돌리면, 예전에는 그때마다 **새 작업 기록이 따로**
+생겼습니다. 하루에 수십 개가 쌓이니 마감할 때 "지금 하고 있던 게 어느 것이냐"를 가리기가
+어려웠습니다. 이제는 오늘 열려 있는 기록이 있으면 그걸 이어서 씁니다. 마감하면 그때
+비로소 다음 기록이 시작됩니다.
+
+### ⭐ ✅ 마감이 한 번에 끝납니다
+
+일을 마칠 때 쓰는 마감 명령이 **중간에 승인을 묻지 않고 끝까지 갑니다.** 예상과 다른 것만
+사람에게 올립니다. 마감이 곁들여 하던 정리 작업 여덟 가지도 다시 자동으로 돕니다 —
+한동안 이 연결이 끊겨 있어서 사람이 기억해서 챙겨야 했습니다.
+
+### ⭐ ✅ 설치된 안내문이 낡으면 알려줍니다
+
+툴킷을 고쳐도 **이미 컴퓨터에 깔린 안내문은 자동으로 바뀌지 않는** 자리가 있습니다.
+이제 시작할 때 "몇 개가 낡았다"고 알려줍니다. 읽어서 알려줄 뿐 막지는 않습니다.
+
+### ⭐ ✅ 차이가 무슨 뜻인지도 설명합니다
+
+`atomy-toolkit verify --meaning`을 쓰면 무엇이 다른지에 더해 **그 차이가 왜 생겼고 무슨
+뜻인지**를 함께 알려줍니다. 다르다는 사실만 보고 판단하기 어려울 때 씁니다.
+
+### ⭐ ✅ 화면이 없는 제품도 문서로 정리됩니다
+
+제품 설명서 체계가 예전에는 **웹 화면이 있는 제품**을 전제로 만들어져 있었습니다. 화면이
+없는 제품(명령줄 도구, 자동 처리기 등)에서는 절반이 빈칸으로 남았죠. 이제 화면 목록 대신
+**기능이 시작되는 자리**를 읽고, 코드끼리 어떻게 연결돼 있는지 관계지도를 자동으로 만들어
+문서 옆에 둡니다.
+
+### ⭐ ✅ 자동 검사가 실제 설치본을 건드리지 못합니다
+
+예전에는 개발용 자동 검사가 **진짜 설치된 툴킷을 덮어써서** 조용히 망가뜨린 적이
+있습니다. 이제 검사는 임시 공간에만 쓰게 구조로 막혀 있습니다. 사용자가 직접 겪는
+기능은 아니지만, 배포되는 내용이 망가진 채 나가는 것을 막아 줍니다.
 
 ### ✅ 툴킷을 업데이트하면 연결된 프로젝트도 함께 최신으로 맞춥니다
 
@@ -245,7 +284,7 @@ AI가 작업을 마쳤다고 할 때, **무엇을 고쳤고 테스트가 실제�
 - **`atomy-toolkit update`는 설치 명령이 아닙니다.** 위의 버전별 설치 파일로 툴킷을 업데이트하세요. v0.4.4부터는 기록된 프로젝트를 자동으로 맞춥니다. 한 프로젝트만 직접 맞추고 싶을 때는 `atomy-toolkit cascade sync`를 쓸 수 있습니다.
 - **혼자 판단해서 코드를 합치거나, 중요한 브랜치에 쓰거나, 실제 서비스에 배포하지 않습니다.**
 - **사용 기록을 클라우드로 보내지 않습니다.** 전부 내 컴퓨터 안에서만 돕니다.
-- **내 기록을 서버에서 대신 처리해주는 서비스는 없습니다.** 나중에 만들지 검토 중인 별개 과제이고, v0.4.4에는 없습니다.
+- **내 기록을 서버에서 대신 처리해주는 서비스는 없습니다.** 나중에 만들지 검토 중인 별개 과제이고, v0.4.6에는 없습니다.
 
 ---
 
@@ -268,34 +307,34 @@ atomy-toolkit graph --help       # 프로젝트 구조 보기
 
 ### 릴리스 파일과 무결성
 
-v0.4.4 GitHub Release asset은 정확히 4개입니다.
+v0.4.6 GitHub Release asset은 정확히 4개입니다.
 
 | Asset | SHA256 |
 |---|---|
-| `atomy_toolkit_lib-0.4.4-py3-none-any.whl` | `e864ed8d2e0d258452b8bc7fae26cfd37a9fd00355f5970c3f06ee8e696ffb90` |
-| `SHA256.txt` | `fb58b9f993078161bb775195881add8104e4678a2b8438baaa291eeddff48624` |
-| `install-cli.sh` | `6a79a6bfb73a73c6ee4d9f9d8e12ec0d0cecf6a64b845275b36ac2b524bc7e99` |
-| `install-cli.ps1` | `e107934e55a7799a49b4769f1602aba0e831af18dba2e9410d5f02e06e0240b9` |
+| `atomy_toolkit_lib-0.4.6-py3-none-any.whl` | `5d2f807e3d2df86dee8209a9c418e1884652e6114c2c94f197e996e56a2e3377` |
+| `SHA256.txt` | `9bf831c098b1439289f85f4a155660c51208337cb56e4394bcabb5471bf07225` |
+| `install-cli.sh` | `0e8cd2571383c748b5c2e788aa14dbeecb95c405e7d5db1b5415212e8528278c` |
+| `install-cli.ps1` | `6f0b06585e35975f073d206dd1ab7cc22cf8db2d5dffb149fa34f0c070c5ff02` |
 
 `SHA256.txt` 에는 wheel과 installer 2개의 hash가 들어 있습니다. checksum 파일은 자기
 자신의 안정적인 hash를 포함할 수 없으므로 `SHA256.txt` 의 hash는 위 표에 별도로 제공합니다.
 
 asset은 서명되지 않았습니다. 위 고정 hash가 릴리스 무결성 통제입니다. `.exe`, `.pkg`,
-`.dmg`, `.AppImage` 는 v0.4.4 공식 배포 경로에 포함되지 않습니다.
+`.dmg`, `.AppImage` 는 v0.4.6 공식 배포 경로에 포함되지 않습니다.
 
-bootstrap은 고정된 `atomy_toolkit_lib-0.4.4-py3-none-any.whl` 만 다운로드하고 내장
+bootstrap은 고정된 `atomy_toolkit_lib-0.4.6-py3-none-any.whl` 만 다운로드하고 내장
 SHA256을 검증합니다. 그 뒤 격리된 virtual environment에 설치하고
 `atomy-toolkit self-install` 을 실행합니다. system site-packages에는 설치하지 않습니다.
 
-- 릴리스 준비 commit: `65f33d6ecd84aaa4c6bdfbadcd351fe654ca5fb0`
+- 릴리스 준비 commit: `cbca2e9d1c7cf517006afd9e5828cf0cd96fd6e1`
 - Graph Report는 Playwright `1.62.0` 을 직접 development dependency로 고정합니다.
   Playwright는 runtime wheel에 포함되지 않습니다.
 
 ### 버전 표기
 
-`v0.4.4` 같은 GitHub tag가 공개 제품 릴리스입니다. 과거 cascade metadata의 `1.0.0` 은
+`v0.4.6` 같은 GitHub tag가 공개 제품 릴리스입니다. 과거 cascade metadata의 `1.0.0` 은
 별도 내부 asset 버전 계보이며 공개 `v1.0.0` 릴리스를 의미하지 않습니다. 이 wheel의
-cascade master metadata는 `1.1.7` 입니다.
+cascade master metadata는 `1.2.2` 입니다.
 
 </details>
 
@@ -303,7 +342,7 @@ cascade master metadata는 `1.1.7` 입니다.
 
 ## 라이선스와 개인정보
 
-Atomy Toolkit v0.4.4는 [MIT License](LICENSE)로 배포합니다. [NOTICE](NOTICE)와
+Atomy Toolkit v0.4.6은 [MIT License](LICENSE)로 배포합니다. [NOTICE](NOTICE)와
 [Graph Report 고지](THIRD_PARTY_NOTICES.md)에 사용한 외부 자료를 표시했습니다.
 
 이 공개 저장소에는 비공개 소스가 들어있지 않습니다. 패키징 과정에서 개발 이력, 자격증명,
