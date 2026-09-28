@@ -7,20 +7,28 @@ This product includes ported engineering-discipline skills derived from:
   Copyright (c) Addy Osmani and the agent-skills contributors.
   Licensed under the MIT License.
 
-The following cascade skills are Korean-language rewrites of the corresponding
-addyosmani/agent-skills workflows (content adapted, not verbatim):
-
-  incremental-implementation, context-engineering, source-driven-development,
-  doubt-driven-development, frontend-ui-engineering, api-and-interface-design,
-  debugging-and-error-recovery (incl. browser-testing-with-devtools),
-  code-simplification, performance-optimization, git-workflow-and-versioning,
-  ci-cd-and-automation, deprecation-and-migration, documentation-and-adrs,
-  observability-and-instrumentation, shipping-and-launch,
-  testing-and-quality-checklists (testing-patterns + performance + accessibility).
+The 16 Korean-language rewrites of addyosmani/agent-skills workflows that
+previously shipped as cascade skills were removed in 2026-08 (productization
+cleanroom review): their subject matter (WCAG, OpenTelemetry, Core Web Vitals,
+CI/CD gating) targets professional developers, while this toolkit's primary
+users are non-developers. They remain retrievable from git history.
 
 Additionally, OWASP Top 10 coverage (security-check) and 5-axis review guidance
 (review) absorb material from addyosmani/agent-skills security-and-hardening and
 code-review-and-quality.
+
+Optional dependency
+-------------------
+
+The `graph` extra (`pip install atomy-toolkit-lib[graph]`) installs:
+
+  graphifyy  (https://github.com/safishamsi/graphify)
+  Copyright (c) 2026 Safi Shamsi.
+  Licensed under the MIT License.
+
+It is not installed by default and no graphify source is vendored here; the
+extra declares a PyPI requirement only. `/plandoc` degrades to a stdlib-`ast`
+lite mode when it is absent.
 
 MIT License (addyosmani/agent-skills)
 -------------------------------------

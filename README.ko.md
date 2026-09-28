@@ -1,349 +1,59 @@
-# Atomy Toolkit
+# Atomy Toolkit 0.4.9 설치 안내
 
-[English](README.md) | 한국어
+이 안내와 설치 파일은 `release-manifest.json`에서 함께 생성했습니다.
+Python 3.12 이상 또는 미리 설치한 uv가 필요합니다.
+설치 파일을 내려받고 내용이 일치하는지 확인한 뒤 실행하세요.
 
-**AI에게 개발을 시킬 때, 매번 처음부터 설명하지 않아도 되게 해주는 도구예요.**
+## Linux
 
-Claude Code 같은 AI 코딩 도구를 쓰다 보면 이런 일이 생깁니다. 어제 정한 걸 오늘 또
-설명하고, AI가 "다 됐습니다"라고 했는데 실제로는 안 돌아가고, 대화창을 새로 열면 여태
-쌓은 맥락이 사라지죠.
-
-Atomy Toolkit을 프로젝트에 한 번 깔아두면:
-
-- **AI가 어제 한 일을 기억합니다** — 무엇을 왜 그렇게 정했는지 기록해두고 다음 대화에서 알아서 꺼내 씁니다.
-- **"됐습니다"를 함부로 못 합니다** — 테스트를 실제로 돌려 결과를 보여주기 전에는 완료라고 말하지 않게 규칙이 걸립니다.
-- **일하는 순서가 정해집니다** — 조사 → 계획 → 승인 → 구현. 계획을 보고 "그거 말고"라고 할 기회가 생깁니다.
-- **내 컴퓨터 안에서만 돕니다** — 서버로 보내는 게 없습니다.
-
-> 💡 **누구를 위한 도구인가요?**
-> 코딩을 직접 하지 않는 분이 AI와 함께 결과물을 만들고, 나중에 개발자에게 넘기는 상황을
-> 염두에 두고 만들었습니다. 개발자에게도 물론 쓸모 있습니다.
-
----
-
-## 지금 버전
-
-- 최신 공개 버전: **[v0.4.6](https://github.com/suhwang-atomy/_global-toolkit-releases/releases/tag/v0.4.6)** (2026-08-16)
-- `v0.4.0` 이후 추가된 내용은 아래에 쉽게 정리했습니다. `v0.4.0`의 전체 기준 문서는 [한국어 패치 노트](PATCH_NOTES.ko.md) 또는 [English](PATCH_NOTES.md)에서 볼 수 있습니다.
-
-이 저장소에는 설치 파일과 문서만 있습니다. 프로그램 소스 코드는 비공개입니다.
-
----
-
-## 설치하기
-
-### 먼저 준비물 확인
-
-컴퓨터에 **Python 3.12 이상**이 필요합니다. 터미널(Windows는 PowerShell)에 이렇게 쳐보세요.
-
-```bash
-python3 --version
+```sh
+curl -fL -o install-cli.sh 'https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.9/install-cli.sh'
+echo '22a2a19fe26a876901a256cfedac60c9814cea3e8a75bf56a47269fe308aad94  install-cli.sh' | sha256sum -c - && sh ./install-cli.sh
 ```
 
-`Python 3.12.x` 처럼 나오면 준비 완료입니다. "명령을 찾을 수 없다"고 나오거나 숫자가
-3.12보다 낮으면 [python.org](https://www.python.org/downloads/)에서 먼저 설치하세요.
+## macOS
 
-> 설치 파일은 Python을 대신 깔아주지 않습니다. 없으면 그냥 멈추고 안내만 합니다.
-> (`uv`라는 도구가 이미 있다면 그걸로도 됩니다.)
+```sh
+curl -fL -o install-cli.sh 'https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.9/install-cli.sh'
+echo '22a2a19fe26a876901a256cfedac60c9814cea3e8a75bf56a47269fe308aad94  install-cli.sh' | shasum -a 256 -c - && sh ./install-cli.sh
+```
 
-### 설치 명령
-
-아래를 **그대로 복사해서 붙여넣으세요.** 3줄이 한 세트입니다.
-
-<!-- markdownlint-disable MD013 -->
-
-**Windows (PowerShell)**
+## Windows PowerShell
 
 ```powershell
-Invoke-WebRequest -Uri https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.6/install-cli.ps1 -OutFile install-cli.ps1
-$expected = "6f0b06585e35975f073d206dd1ab7cc22cf8db2d5dffb149fa34f0c070c5ff02"
-$actual = (Get-FileHash .\install-cli.ps1 -Algorithm SHA256).Hash.ToLowerInvariant()
-if ($actual -ne $expected) { throw "Installer SHA256 mismatch" }
-& .\install-cli.ps1
+Invoke-WebRequest -Uri 'https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.9/install-cli.ps1' -OutFile install-cli.ps1
+if ((Get-FileHash ./install-cli.ps1 -Algorithm SHA256).Hash.ToLowerInvariant() -ne 'cfff594f96fa8d53a32a7ecdeb2c7ef1a080106490318957b63a79950795c725') { throw '설치 파일 내용이 다릅니다.' }
+& ./install-cli.ps1
 ```
 
-**macOS**
-
-```bash
-curl -fL -o install-cli.sh https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.6/install-cli.sh
-echo "0e8cd2571383c748b5c2e788aa14dbeecb95c405e7d5db1b5415212e8528278c  install-cli.sh" | shasum -a 256 -c -
-sh install-cli.sh
-```
-
-**Linux**
-
-```bash
-curl -fL -o install-cli.sh https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.6/install-cli.sh
-echo "0e8cd2571383c748b5c2e788aa14dbeecb95c405e7d5db1b5415212e8528278c  install-cli.sh" | sha256sum -c -
-sh install-cli.sh
-```
-
-<!-- markdownlint-enable MD013 -->
-
-<details>
-<summary><b>중간에 왜 이상한 문자열을 확인하나요?</b> (클릭해서 펼치기)</summary>
-
-가운데 줄은 **받은 파일이 진짜 우리가 올린 파일인지 확인**하는 절차입니다. 파일마다
-지문 같은 값(SHA256)이 있는데, 그게 우리가 공개한 값과 다르면 중간에 누가 바꿔치기한
-것이므로 설치를 멈춥니다.
-
-그래서 "인터넷에서 받은 걸 바로 실행"하지 않고 **① 파일로 저장 → ② 지문 확인 →
-③ 실행** 순서로 나눠 뒀습니다. 한 줄로 줄이면 편하지만 이 확인을 건너뛰게 됩니다.
-
-지문이 다르다고 나오면 설치하지 마시고 알려주세요.
-
-</details>
-
-### 설치되면 무슨 일이 일어나나요
-
-프로그램은 **다른 프로그램과 섞이지 않는 별도 공간**에 설치됩니다. 컴퓨터에 이미 깔린
-Python 환경을 건드리지 않으니 안심하셔도 됩니다.
-
-설치 확인:
-
-```bash
-atomy-toolkit --version
-```
-
-문제가 있는지 스스로 점검하게 하려면:
-
-```bash
-atomy-toolkit doctor
-```
-
-### 첫 프로젝트 만들어보기
-
-```bash
-atomy-toolkit install ./my-project
-```
-
-이러면 `atomy-toolkit` 폴더에 AI가 참고할 규칙과 기록 공간이 자동으로 만들어집니다.
-이후 그 폴더에서 Claude Code를 열고 `/rpi`라고 쳐보세요. OpenAI Codex에서는 `$rpi`를
-쓰면 됩니다. 조사 → 계획 → 구현 순서로 일이 진행됩니다.
-
-더 자세한 설치 옵션은 [INSTALL.md](INSTALL.md), 전체 검증 절차는
-[공개 설치 가이드](docs/reference/PUBLIC_RELEASE_INSTALL_GUIDE.md)에 있습니다.
-
----
-
-## v0.4.6에서 좋아진 것
-
-기능마다 **어디까지 확인됐는지**를 솔직하게 표시했습니다.
-
-| 표시 | 뜻 |
-|---|---|
-| ✅ **검증 완료** | 테스트를 통과했습니다. 편하게 쓰세요. |
-| 🟡 **미리보기** | 실제로 써봤지만 아직 다듬는 중입니다. 확인해가며 쓰세요. |
-| 🧪 **실험 중** | 첫 실전 사용이 아직입니다. 중요한 일에는 쓰지 마세요. |
-
-> 아래는 `v0.4.0` 이후 쌓인 내용을 한 번에 정리한 것입니다. **⭐ 표시**는 지난 두 판
-> (`v0.4.5`·`v0.4.6`)에서 새로 들어온 것입니다.
-
-### ⭐ ✅ 하루에 여러 번 일해도 기록이 하나로 남습니다
-
-한 가지 일을 하면서 워크플로를 여러 번 돌리면, 예전에는 그때마다 **새 작업 기록이 따로**
-생겼습니다. 하루에 수십 개가 쌓이니 마감할 때 "지금 하고 있던 게 어느 것이냐"를 가리기가
-어려웠습니다. 이제는 오늘 열려 있는 기록이 있으면 그걸 이어서 씁니다. 마감하면 그때
-비로소 다음 기록이 시작됩니다.
-
-### ⭐ ✅ 마감이 한 번에 끝납니다
-
-일을 마칠 때 쓰는 마감 명령이 **중간에 승인을 묻지 않고 끝까지 갑니다.** 예상과 다른 것만
-사람에게 올립니다. 마감이 곁들여 하던 정리 작업 여덟 가지도 다시 자동으로 돕니다 —
-한동안 이 연결이 끊겨 있어서 사람이 기억해서 챙겨야 했습니다.
-
-### ⭐ ✅ 설치된 안내문이 낡으면 알려줍니다
-
-툴킷을 고쳐도 **이미 컴퓨터에 깔린 안내문은 자동으로 바뀌지 않는** 자리가 있습니다.
-이제 시작할 때 "몇 개가 낡았다"고 알려줍니다. 읽어서 알려줄 뿐 막지는 않습니다.
-
-### ⭐ ✅ 차이가 무슨 뜻인지도 설명합니다
-
-`atomy-toolkit verify --meaning`을 쓰면 무엇이 다른지에 더해 **그 차이가 왜 생겼고 무슨
-뜻인지**를 함께 알려줍니다. 다르다는 사실만 보고 판단하기 어려울 때 씁니다.
-
-### ⭐ ✅ 화면이 없는 제품도 문서로 정리됩니다
-
-제품 설명서 체계가 예전에는 **웹 화면이 있는 제품**을 전제로 만들어져 있었습니다. 화면이
-없는 제품(명령줄 도구, 자동 처리기 등)에서는 절반이 빈칸으로 남았죠. 이제 화면 목록 대신
-**기능이 시작되는 자리**를 읽고, 코드끼리 어떻게 연결돼 있는지 관계지도를 자동으로 만들어
-문서 옆에 둡니다.
-
-### ⭐ ✅ 자동 검사가 실제 설치본을 건드리지 못합니다
-
-예전에는 개발용 자동 검사가 **진짜 설치된 툴킷을 덮어써서** 조용히 망가뜨린 적이
-있습니다. 이제 검사는 임시 공간에만 쓰게 구조로 막혀 있습니다. 사용자가 직접 겪는
-기능은 아니지만, 배포되는 내용이 망가진 채 나가는 것을 막아 줍니다.
-
-### ✅ 툴킷을 업데이트하면 연결된 프로젝트도 함께 최신으로 맞춥니다
-
-새 버전의 툴킷을 설치하면, 이제 이 컴퓨터에 연결해 둔 프로젝트의 툴킷 파일도 자동으로
-최신 상태에 맞춥니다. 먼저 Cascade만 따로 올리거나 프로젝트마다 명령을 다시 실행할 필요가
-없습니다. 내가 고친 내용은 지키고, 관리 파일을 바꾸기 전에는 백업도 만듭니다.
-
-툴킷은 이 컴퓨터에 기록된 프로젝트만 확인합니다. 컴퓨터 전체를 뒤지지 않으며, 프로젝트
-목록을 서버로 보내지도 않습니다. `/new` 또는 `atomy-toolkit install`로 만든 프로젝트는
-자동으로 기록됩니다.
-
-기존 프로젝트에 AI에게 부탁해 툴킷을 직접 옮겨 넣었다면, 아래 명령을 한 번 실행하세요.
-
-```bash
-atomy-toolkit adopt ./기존-프로젝트
-atomy-toolkit projects list
-```
-
-`adopt`는 그 프로젝트를 목록에 기록합니다. 다음에 툴킷을 설치할 때 자동으로 갱신됩니다.
-지금 바로 맞추려면 그 프로젝트에서 `atomy-toolkit cascade sync`를 실행하세요.
-Windows에서는 v0.4.4부터 설치할 때 명령 경로도 바로잡아, 새 터미널에서
-`atomy-toolkit` 명령을 쓸 수 있습니다.
-
-### ✅ 제품 설명서를 제품 옆에서 함께 관리합니다 (Claude Code: `/plandoc`, Codex: `$plandoc`)
-
-`plandoc`은 제품이 해야 할 일, 어떤 화면이 있는지, 사람이 화면 사이를 어떻게 이동하는지,
-어떤 데이터를 쓰는지, 다음 담당자가 무엇을 알아야 하는지를 쉬운 문서로 만들고 관리합니다.
-문서와 실제 코드, 기존 계획을 서로 비교해서 빠졌거나 오래된 부분을 찾기 쉽게 해줍니다.
-
-v0.4.3부터 Codex에는 `plandoc`이 정식 스킬로 설치됩니다. Codex에서는
-`/prompts:plandoc`이 아니라 `$plandoc`을 쓰세요. 설치하거나 업데이트한 뒤에는 Codex를
-다시 시작하거나 새 대화를 열어야 새 스킬이 보입니다.
-
-사실을 모으는 일은 도구가 돕지만, 코드와 계획이 다를 때 제품이 앞으로 어떻게 되어야 하는지는 여전히
-사람에게 물어보고 결정합니다.
-
-### 🟡 (NEW) 계획을 잃지 않고 여러 작업자를 함께 움직입니다 (`/pm`)
-
-Claude Code에서 승인된 계획을 여러 작업 카드로 나누고, GitHub 이슈에서 진행 상황을
-확인하고, 작업자가 만든 변경 요청을 한곳에 모아 마지막 결정을 내릴 수 있습니다. 서로
-기다릴 필요가 없는 작업을 동시에 진행할 때 유용합니다.
-
-`/pm`은 현재 Claude Code용 미리보기 기능입니다. 사람의 검토 단계를 없애거나 작업자가
-중요한 브랜치를 마음대로 바꿀 권한을 주지는 않습니다.
-
-### ✅ AI 도구가 바뀌어도 설명 난이도를 맞춥니다
-
-프로젝트에서 고른 설명 난이도를 한곳에 저장하고 Claude Code, Codex, Cursor,
-Antigravity용 안내에 함께 적용합니다. 설명이 계속 어렵다는 요청이 반복되면 더 쉬운 단계로
-바꿀지 먼저 제안할 수도 있습니다.
-
-### ✅ 업데이트해도 내가 고친 파일이 날아가지 않습니다
-
-전에는 툴킷을 새 버전으로 올리면 내가 손댄 설정까지 기본값으로 되돌아갈 위험이 있었어요.
-이제는 **툴킷이 처음 준 그대로인지, 내가 바꿨는지 구분해서** 내가 바꾼 건 건드리지 않습니다.
-바꾸기 전에 "이 파일을 이렇게 바꿀 예정"을 먼저 보여주고, 건너뛴 파일은 이유까지 알려줍니다.
-
-> ⚠️ **아직 못 하는 것** — 내 수정과 새 버전을 **자동으로 합쳐주지는** 못합니다(둘 중 하나를
-> 고릅니다). 업데이트가 끝난 뒤 누르는 "되돌리기" 버튼도 없습니다. 되돌리려면 자동으로
-> 만들어 둔 백업 폴더를 직접 복사해야 합니다.
-
-### ✅ "다 됐습니다"에 증거가 붙습니다
-
-AI가 작업을 마쳤다고 할 때, **무엇을 고쳤고 테스트가 실제로 통과했는지**를 함께 묶어서
-기록합니다. 검토를 통과하지 못한 작업은 완료 표시가 되지 않습니다.
-
-### ✅ 대화를 새로 열어도 맥락이 이어집니다
-
-어제 정한 것, 하다 만 것, 조심해야 할 것을 정리해두고 다음 대화에서 자동으로 꺼내 옵니다.
-오래된 기록은 알아서 정리하되, **아직 진행 중인 일은 지우지 않고 남깁니다.**
-
-### ✅ 프로젝트 구조를 그림과 보고서로 봅니다
-
-코드와 결정이 어떻게 연결돼 있는지 훑어보는 화면을 제공합니다. 인터넷 연결 없이 열리는
-파일 하나로 나옵니다.
-
-### ✅ 기록은 내 컴퓨터에만 남습니다
-
-사용 기록을 서버로 보내지 않습니다. 켤지 말지는 직접 고르고, 켜더라도 **내가 입력한 내용,
-파일 경로, 프로젝트 이름은 저장하지 않습니다.**
-
-### ✅ 밤새 대신 일 시키기 (`/delegate`)
-
-퇴근할 때 켜 둔 **내 컴퓨터**에서 밤새 작업을 진행시키는 기능입니다(운영 서버용이 아닙니다).
-할 수 있는 일을 미리 정해 봉인하고, 격리된 작업 공간에서만 돌리고, 아침에 사람이
-`GO`/`NO-GO`를 결정합니다. 
-
-### 🟡 그 밖의 미리보기 기능
-
-- **팀 규칙 자동 점검** — 두 개의 AI 도구로 같은 규칙을 검사하는 실험까지 마쳤지만, 여러 명이 함께 쓰는 상황은 아직 확인 전입니다.
-- **기록을 여러 기기에서 나눠 쓰기** — 같은 네트워크 안에서 주고받는 것까지 확인했습니다. 시험에 쓴 장비는 그냥 그때 쓸 수 있던 다른 PC였고, 운영 서버가 아닙니다.
-- **자리 비운 사이 처리 / 자료 조사 이어달리기** — 안전장치를 걸어 만들었지만 실제 예약 실행은 아직입니다.
-
-### 🧪 실험 중인 기능
-
-- **Antigravity·Cowork 연동** — 설치는 되지만 실사용 확인이 더 필요합니다.
-- **기능 자동 승격** — 기본으로 꺼져 있습니다.
-
-> 🟡와 🧪 기능은 운영 지원을 약속하지 않습니다. 바깥에 영향을 주는 자동화는 격리된
-> 작업 공간에서만 돌고, **마지막 확정은 반드시 사람이 합니다.**
-
----
-
-## 이 도구가 하지 않는 일
-
-기대하지 않으셔야 할 것들을 미리 적어둡니다.
-
-- **`atomy-toolkit update`는 설치 명령이 아닙니다.** 위의 버전별 설치 파일로 툴킷을 업데이트하세요. v0.4.4부터는 기록된 프로젝트를 자동으로 맞춥니다. 한 프로젝트만 직접 맞추고 싶을 때는 `atomy-toolkit cascade sync`를 쓸 수 있습니다.
-- **혼자 판단해서 코드를 합치거나, 중요한 브랜치에 쓰거나, 실제 서비스에 배포하지 않습니다.**
-- **사용 기록을 클라우드로 보내지 않습니다.** 전부 내 컴퓨터 안에서만 돕니다.
-- **내 기록을 서버에서 대신 처리해주는 서비스는 없습니다.** 나중에 만들지 검토 중인 별개 과제이고, v0.4.6에는 없습니다.
-
----
-
-## 자주 쓰는 명령
-
-```bash
-atomy-toolkit --version          # 버전 확인
-atomy-toolkit doctor             # 문제 자가 점검
-atomy-toolkit install ./my-project   # 프로젝트에 설치
-atomy-toolkit adopt ./old-project    # 기존 프로젝트 연결
-atomy-toolkit projects list      # 연결된 프로젝트 보기
-atomy-toolkit memtemple --help   # 기억 저장소
-atomy-toolkit graph --help       # 프로젝트 구조 보기
-```
-
----
-
-<details>
-<summary><b>기술 상세</b> — 설치 파일 지문, 버전 표기 규칙 (클릭해서 펼치기)</summary>
-
-### 릴리스 파일과 무결성
-
-v0.4.6 GitHub Release asset은 정확히 4개입니다.
-
-| Asset | SHA256 |
-|---|---|
-| `atomy_toolkit_lib-0.4.6-py3-none-any.whl` | `5d2f807e3d2df86dee8209a9c418e1884652e6114c2c94f197e996e56a2e3377` |
-| `SHA256.txt` | `9bf831c098b1439289f85f4a155660c51208337cb56e4394bcabb5471bf07225` |
-| `install-cli.sh` | `0e8cd2571383c748b5c2e788aa14dbeecb95c405e7d5db1b5415212e8528278c` |
-| `install-cli.ps1` | `6f0b06585e35975f073d206dd1ab7cc22cf8db2d5dffb149fa34f0c070c5ff02` |
-
-`SHA256.txt` 에는 wheel과 installer 2개의 hash가 들어 있습니다. checksum 파일은 자기
-자신의 안정적인 hash를 포함할 수 없으므로 `SHA256.txt` 의 hash는 위 표에 별도로 제공합니다.
-
-asset은 서명되지 않았습니다. 위 고정 hash가 릴리스 무결성 통제입니다. `.exe`, `.pkg`,
-`.dmg`, `.AppImage` 는 v0.4.6 공식 배포 경로에 포함되지 않습니다.
-
-bootstrap은 고정된 `atomy_toolkit_lib-0.4.6-py3-none-any.whl` 만 다운로드하고 내장
-SHA256을 검증합니다. 그 뒤 격리된 virtual environment에 설치하고
-`atomy-toolkit self-install` 을 실행합니다. system site-packages에는 설치하지 않습니다.
-
-- 릴리스 준비 commit: `cbca2e9d1c7cf517006afd9e5828cf0cd96fd6e1`
-- Graph Report는 Playwright `1.62.0` 을 직접 development dependency로 고정합니다.
-  Playwright는 runtime wheel에 포함되지 않습니다.
-
-### 버전 표기
-
-`v0.4.6` 같은 GitHub tag가 공개 제품 릴리스입니다. 과거 cascade metadata의 `1.0.0` 은
-별도 내부 asset 버전 계보이며 공개 `v1.0.0` 릴리스를 의미하지 않습니다. 이 wheel의
-cascade master metadata는 `1.2.2` 입니다.
-
-</details>
-
----
-
-## 라이선스와 개인정보
-
-Atomy Toolkit v0.4.6은 [MIT License](LICENSE)로 배포합니다. [NOTICE](NOTICE)와
-[Graph Report 고지](THIRD_PARTY_NOTICES.md)에 사용한 외부 자료를 표시했습니다.
-
-이 공개 저장소에는 비공개 소스가 들어있지 않습니다. 패키징 과정에서 개발 이력, 자격증명,
-로컬 기억, 세션·로그, 백업, 진행 중인 문서를 전부 제외합니다.
+## 설치 선택
+
+기본 설치는 Claude Code와 Codex의 연결을 등록합니다.
+`ATOMY_TOOLKIT_CODING_TOOL`은 `codex` 또는 `skip`을 선택할 수 있습니다.
+`ATOMY_TOOLKIT_IDE_TOOL`은 `antigravity` 또는 `skip`을 선택할 수 있으며 기본은 `skip`입니다.
+VS Code 자동 등록은 지원하지 않습니다. 미지원 선택은 설치 오류로 알립니다.
+설치 위치는 `ATOMY_TOOLKIT_INSTALL_ROOT`로 바꿀 수 있으며 기본은 사용자 홈의 `atomy-toolkit`입니다.
+선택을 바꾸려면 설치 파일 실행 전에 해당 환경변수를 설정하세요.
+
+필수 연결 부품 `[mcp]`를 배포 파일과 같은 실행 공간에 설치합니다.
+재설치는 별도 실행 공간을 만들며 기존 실행 공간을 덮지 않습니다.
+기존 설정과 사용자 자료는 보존하고 교체할 파일의 복구본을 남깁니다.
+설정 등록과 실제 연결 검사에 실패하면 설치 완료로 표시하지 않습니다.
+
+## 설치 후 확인
+
+새 터미널에서 `atomy-toolkit doctor`로 연결 상태를 확인하세요.
+기존에 열어 둔 AI 앱은 다시 시작해야 새 연결과 안내를 읽습니다.
+설치기의 연결 검사는 앱 화면에서 실제 사용한 것과 별도로 기록합니다.
+프로젝트 폴더에서 `atomy-toolkit install .`을 실행한 뒤 AI 앱에서 `/rpi`로 시작하세요.
+
+## 이번 배포 파일
+
+- 버전: `0.4.9`
+- 파일: `atomy_toolkit_lib-0.4.9-py3-none-any.whl`
+- 주소: https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.9/atomy_toolkit_lib-0.4.9-py3-none-any.whl
+- 내용 확인값(SHA256): `f18b6f643fa67c8b27bf994899381e817740271b4770d5c11328ffd3a270d716`
+- 설치 파일의 확인값과 앱 선택 목록: `release-manifest.json`
+
+공개 저장소의 README·상세 안내·루트 설치 파일을 갱신할 때는 같은 배포의
+`public-source.zip`을 사용하세요. 이 파일 생성만으로 원격 공개 배포가 실행되지는 않습니다.

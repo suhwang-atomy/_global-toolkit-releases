@@ -1,188 +1,59 @@
-# Atomy Toolkit v0.4.0 Public Release Install Guide
+# Atomy Toolkit 0.4.9 설치 안내
 
-This guide documents the public, clean-slate Atomy Toolkit artifact channel.
+이 안내와 설치 파일은 `release-manifest.json`에서 함께 생성했습니다.
+Python 3.12 이상 또는 미리 설치한 uv가 필요합니다.
+설치 파일을 내려받고 내용이 일치하는지 확인한 뒤 실행하세요.
 
-- Private source repository: `suhwang-atomy/_global-toolkit`
-- Public release repository:
-  <https://github.com/suhwang-atomy/_global-toolkit-releases>
-- Current release:
-  [v0.4.0](https://github.com/suhwang-atomy/_global-toolkit-releases/releases/tag/v0.4.0)
-- Exact source commit: `f321cc47045bec5c0b08f05163fec2e44bc408f4`
+## Linux
 
-## Supported release assets
-
-The v0.4.0 GitHub Release contains exactly these four assets:
-
-| Asset | SHA256 |
-|---|---|
-| `atomy_toolkit_lib-0.4.0-py3-none-any.whl` | `bd90615f04c647a0d3e004ea75e65bb18bad3467a335316b0d9883c079c2043a` |
-| `SHA256.txt` | `563350acde38236dd788056df7045d426a52f56567ddc353ca0dd26825e1f08d` |
-| `install-cli.sh` | `c4509c51bc5cb18f3d0d33867477fc327976f19b889df5642aec76d9e6b7ffdc` |
-| `install-cli.ps1` | `0d96ad79157eddf03502958f9cc3d33aaa27d09f92b5d00cbb9a62dd1f606804` |
-
-No native `.exe`, `.pkg`, `.dmg`, or `.AppImage` belongs to the supported
-v0.4.0 channel.
-
-`SHA256.txt` lists the wheel and both command installers. It cannot contain a
-stable checksum of itself, so its own checksum is anchored in the release
-documentation above.
-
-## Prerequisite
-
-Before running an installer, provide either:
-
-- Python 3.12 or newer on `PATH`; or
-- `uv` already installed on `PATH`, or supplied through
-  `ATOMY_TOOLKIT_UV_BIN`.
-
-If Python is unavailable, preinstalled `uv` may provision Python 3.12. The
-bootstrap never downloads or executes a Python or `uv` installer. It fails
-closed if neither prerequisite is available and links to:
-
-- <https://www.python.org/downloads/>
-- <https://docs.astral.sh/uv/getting-started/installation/>
-
-## Safe pinned install
-
-Never pipe a remote script directly into a shell. Download the exact v0.4.0
-asset, verify it, and execute the verified local file.
-
-### Linux
-
-<!-- markdownlint-disable MD013 -->
-
-```bash
-curl -fL -o install-cli.sh https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.0/install-cli.sh
-echo "c4509c51bc5cb18f3d0d33867477fc327976f19b889df5642aec76d9e6b7ffdc  install-cli.sh" | sha256sum -c -
-sh install-cli.sh
+```sh
+curl -fL -o install-cli.sh 'https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.9/install-cli.sh'
+echo '22a2a19fe26a876901a256cfedac60c9814cea3e8a75bf56a47269fe308aad94  install-cli.sh' | sha256sum -c - && sh ./install-cli.sh
 ```
 
-### macOS
+## macOS
 
-```bash
-curl -fL -o install-cli.sh https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.0/install-cli.sh
-echo "c4509c51bc5cb18f3d0d33867477fc327976f19b889df5642aec76d9e6b7ffdc  install-cli.sh" | shasum -a 256 -c -
-sh install-cli.sh
+```sh
+curl -fL -o install-cli.sh 'https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.9/install-cli.sh'
+echo '22a2a19fe26a876901a256cfedac60c9814cea3e8a75bf56a47269fe308aad94  install-cli.sh' | shasum -a 256 -c - && sh ./install-cli.sh
 ```
 
-### Windows 11 PowerShell
+## Windows PowerShell
 
 ```powershell
-Invoke-WebRequest -Uri https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.0/install-cli.ps1 -OutFile install-cli.ps1
-$expected = "0d96ad79157eddf03502958f9cc3d33aaa27d09f92b5d00cbb9a62dd1f606804"
-$actual = (Get-FileHash .\install-cli.ps1 -Algorithm SHA256).Hash.ToLowerInvariant()
-if ($actual -ne $expected) { throw "Installer SHA256 mismatch" }
-& .\install-cli.ps1
+Invoke-WebRequest -Uri 'https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.9/install-cli.ps1' -OutFile install-cli.ps1
+if ((Get-FileHash ./install-cli.ps1 -Algorithm SHA256).Hash.ToLowerInvariant() -ne 'cfff594f96fa8d53a32a7ecdeb2c7ef1a080106490318957b63a79950795c725') { throw '설치 파일 내용이 다릅니다.' }
+& ./install-cli.ps1
 ```
 
-<!-- markdownlint-enable MD013 -->
+## 설치 선택
 
-The command installers contain the pinned wheel URL and
-`bd90615f04c647a0d3e004ea75e65bb18bad3467a335316b0d9883c079c2043a`. They download that wheel, verify its bytes,
-create an isolated virtual environment, install the wheel, and run
-`atomy-toolkit self-install`.
+기본 설치는 Claude Code와 Codex의 연결을 등록합니다.
+`ATOMY_TOOLKIT_CODING_TOOL`은 `codex` 또는 `skip`을 선택할 수 있습니다.
+`ATOMY_TOOLKIT_IDE_TOOL`은 `antigravity` 또는 `skip`을 선택할 수 있으며 기본은 `skip`입니다.
+VS Code 자동 등록은 지원하지 않습니다. 미지원 선택은 설치 오류로 알립니다.
+설치 위치는 `ATOMY_TOOLKIT_INSTALL_ROOT`로 바꿀 수 있으며 기본은 사용자 홈의 `atomy-toolkit`입니다.
+선택을 바꾸려면 설치 파일 실행 전에 해당 환경변수를 설정하세요.
 
-## Verify all downloaded assets
+필수 연결 부품 `[mcp]`를 배포 파일과 같은 실행 공간에 설치합니다.
+재설치는 별도 실행 공간을 만들며 기존 실행 공간을 덮지 않습니다.
+기존 설정과 사용자 자료는 보존하고 교체할 파일의 복구본을 남깁니다.
+설정 등록과 실제 연결 검사에 실패하면 설치 완료로 표시하지 않습니다.
 
-Download `SHA256.txt` and the three payloads into one directory:
+## 설치 후 확인
 
-<!-- markdownlint-disable MD013 -->
+새 터미널에서 `atomy-toolkit doctor`로 연결 상태를 확인하세요.
+기존에 열어 둔 AI 앱은 다시 시작해야 새 연결과 안내를 읽습니다.
+설치기의 연결 검사는 앱 화면에서 실제 사용한 것과 별도로 기록합니다.
+프로젝트 폴더에서 `atomy-toolkit install .`을 실행한 뒤 AI 앱에서 `/rpi`로 시작하세요.
 
-```bash
-base=https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.0
-curl -fLO "$base/SHA256.txt"
-curl -fLO "$base/atomy_toolkit_lib-0.4.0-py3-none-any.whl"
-curl -fLO "$base/install-cli.sh"
-curl -fLO "$base/install-cli.ps1"
-echo "563350acde38236dd788056df7045d426a52f56567ddc353ca0dd26825e1f08d  SHA256.txt" | sha256sum -c -
-sha256sum -c SHA256.txt
-```
+## 이번 배포 파일
 
-On macOS, use `shasum -a 256 -c -` and `shasum -a 256 -c SHA256.txt`.
+- 버전: `0.4.9`
+- 파일: `atomy_toolkit_lib-0.4.9-py3-none-any.whl`
+- 주소: https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.9/atomy_toolkit_lib-0.4.9-py3-none-any.whl
+- 내용 확인값(SHA256): `f18b6f643fa67c8b27bf994899381e817740271b4770d5c11328ffd3a270d716`
+- 설치 파일의 확인값과 앱 선택 목록: `release-manifest.json`
 
-Windows PowerShell:
-
-```powershell
-$base = "https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.4.0"
-Invoke-WebRequest "$base/SHA256.txt" -OutFile SHA256.txt
-Invoke-WebRequest "$base/atomy_toolkit_lib-0.4.0-py3-none-any.whl" -OutFile atomy_toolkit_lib-0.4.0-py3-none-any.whl
-Invoke-WebRequest "$base/install-cli.sh" -OutFile install-cli.sh
-Invoke-WebRequest "$base/install-cli.ps1" -OutFile install-cli.ps1
-$shaFileExpected = "563350acde38236dd788056df7045d426a52f56567ddc353ca0dd26825e1f08d"
-$shaFileActual = (Get-FileHash .\SHA256.txt -Algorithm SHA256).Hash.ToLowerInvariant()
-if ($shaFileActual -ne $shaFileExpected) { throw "SHA256.txt mismatch" }
-Get-Content .\SHA256.txt | Where-Object { $_ -match "^[0-9a-f]{64}\s+" } | ForEach-Object {
-  $expected, $name = $_ -split "\s+", 2
-  $path = $name.Trim()
-  $actual = (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant()
-  if ($actual -ne $expected) { throw "SHA256 mismatch: $path" }
-}
-```
-
-<!-- markdownlint-enable MD013 -->
-
-## Installation result
-
-The bootstrap installs into an isolated virtual environment under the selected
-Toolkit root; it does not modify system site-packages.
-
-Verify:
-
-```bash
-atomy-toolkit --version
-atomy-toolkit doctor
-atomy-toolkit graph --help
-atomy-toolkit afk --help
-```
-
-The version must report `0.4.0`.
-
-## Compliance and privacy
-
-- The project is distributed under the [MIT License](../../LICENSE).
-- Adapted engineering-discipline material is attributed in
-  [NOTICE](../../NOTICE).
-- [Graph Report third-party notices](../../THIRD_PARTY_NOTICES.md) cover 35
-  runtime-bundled package records. The runtime licenses are MIT, ISC, and
-  BSD-3-Clause; installed MPL-licensed package records are `0`.
-- Clean-slate packaging excludes private source history, credentials, user
-  memory, Graph data, session/log state, backups, and in-flight project
-  documents.
-- The public artifacts are unsigned. The pinned SHA256 values are the integrity
-  control.
-
-## Infrastructure scope
-
-The DGX used during Knowledge Fabric testing was another temporarily available
-PC, not an operating server.
-
-A future centralized service may batch embedding work for Memtemple records
-provided by Toolkit users. Railway or AWS hosting, and a possible cascade
-patch/update service, are separate future projects. They are not deployed or
-operated by v0.4.0.
-
-## Operator release flow
-
-1. Build from exact private source commit
-   `f321cc47045bec5c0b08f05163fec2e44bc408f4` in a clean checkout.
-   Set `SOURCE_DATE_EPOCH=1785391413`, the source commit timestamp, for the
-   wheel build. A second clean build must produce the same wheel SHA256.
-2. Run the final Python, Graph, package, leak, license, and isolated-install
-   release gates once at the release boundary.
-3. Produce only:
-   - `atomy_toolkit_lib-0.4.0-py3-none-any.whl`
-   - `SHA256.txt`
-   - `install-cli.sh`
-   - `install-cli.ps1`
-4. Replace every `FINAL_*_PLACEHOLDER` in public documentation and bootstrap
-   files with the final source commit or asset checksum.
-5. Confirm that no placeholder, private path, credential, user memory, or
-   source archive remains.
-6. Merge the public documentation branch and create the v0.4.0 GitHub Release
-   with exactly those four assets.
-7. Download all four assets from the public release and repeat checksum and
-   isolated-install verification against the public URLs.
-
-Do not tag the private source repository to invoke an unrelated native
-installer workflow. The v0.4.0 public channel is the wheel-and-command
-installer channel described here.
+공개 저장소의 README·상세 안내·루트 설치 파일을 갱신할 때는 같은 배포의
+`public-source.zip`을 사용하세요. 이 파일 생성만으로 원격 공개 배포가 실행되지는 않습니다.
