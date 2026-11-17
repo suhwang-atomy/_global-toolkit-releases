@@ -1,4 +1,4 @@
-# Atomy Toolkit 0.6.0 설치 안내
+# Atomy Toolkit 0.7.0 설치 안내
 
 이 안내와 설치 파일은 `release-manifest.json`에서 함께 생성했습니다.
 Python 3.12 이상 또는 미리 설치한 uv가 필요합니다.
@@ -7,22 +7,22 @@ Python 3.12 이상 또는 미리 설치한 uv가 필요합니다.
 ## Linux
 
 ```sh
-curl -fL -o install-cli.sh 'https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.6.0/install-cli.sh'
-echo '5c5f18b26ea67dc77da9bc5679add70c6c1903210b831e0ea0bcebbfc10caa86  install-cli.sh' | sha256sum -c - && sh ./install-cli.sh
+curl -fL -o install-cli.sh 'https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.7.0/install-cli.sh'
+echo 'd3e9e78a644d4a90ee43fe93027565c03517eaff350d48f8671942dee7c8f3b9  install-cli.sh' | sha256sum -c - && sh ./install-cli.sh
 ```
 
 ## macOS
 
 ```sh
-curl -fL -o install-cli.sh 'https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.6.0/install-cli.sh'
-echo '5c5f18b26ea67dc77da9bc5679add70c6c1903210b831e0ea0bcebbfc10caa86  install-cli.sh' | shasum -a 256 -c - && sh ./install-cli.sh
+curl -fL -o install-cli.sh 'https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.7.0/install-cli.sh'
+echo 'd3e9e78a644d4a90ee43fe93027565c03517eaff350d48f8671942dee7c8f3b9  install-cli.sh' | shasum -a 256 -c - && sh ./install-cli.sh
 ```
 
 ## Windows PowerShell
 
 ```powershell
-Invoke-WebRequest -Uri 'https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.6.0/install-cli.ps1' -OutFile install-cli.ps1
-if ((Get-FileHash ./install-cli.ps1 -Algorithm SHA256).Hash.ToLowerInvariant() -ne '6c6ad1ddfccf470d125ff595193a23741ca2b2f987dbf00f7eeb19b5e370e7da') { throw '설치 파일 내용이 다릅니다.' }
+Invoke-WebRequest -Uri 'https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.7.0/install-cli.ps1' -OutFile install-cli.ps1
+if ((Get-FileHash ./install-cli.ps1 -Algorithm SHA256).Hash.ToLowerInvariant() -ne 'f7802499c1f077bc3f7c83bf5fcb054c9ba7e40cf8970da1f6c3655156200a94') { throw '설치 파일 내용이 다릅니다.' }
 & ./install-cli.ps1
 ```
 
@@ -49,10 +49,10 @@ VS Code 자동 등록은 지원하지 않습니다. 미지원 선택은 설치 �
 
 ## 이번 배포 파일
 
-- 버전: `0.6.0`
-- 파일: `atomy_toolkit_lib-0.6.0-py3-none-any.whl`
-- 주소: https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.6.0/atomy_toolkit_lib-0.6.0-py3-none-any.whl
-- 내용 확인값(SHA256): `e5d1a36114d13977e82810873bf6d1c04a46c0c1d17987b9f5b43abc606b5c8f`
+- 버전: `0.7.0`
+- 파일: `atomy_toolkit_lib-0.7.0-py3-none-any.whl`
+- 주소: https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.7.0/atomy_toolkit_lib-0.7.0-py3-none-any.whl
+- 내용 확인값(SHA256): `de79d9d6d85ac9044b005117e42f0f0c3c21a9b92e972508d544ce1e55d3de11`
 - 설치 파일의 확인값과 앱 선택 목록: `release-manifest.json`
 
 공개 저장소의 README·상세 안내·루트 설치 파일을 갱신할 때는 같은 배포의

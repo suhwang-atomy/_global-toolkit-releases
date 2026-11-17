@@ -3,8 +3,8 @@ set -eu
 
 # Inputs: env override wins, else the values baked in at release time by
 # `atomy-toolkit package bootstrap` (which replaces the __WHEEL_*__ tokens).
-WHEEL_URL="${ATOMY_TOOLKIT_WHEEL_URL:-https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.6.0/atomy_toolkit_lib-0.6.0-py3-none-any.whl}"
-WHEEL_SHA256="${ATOMY_TOOLKIT_WHEEL_SHA256:-e5d1a36114d13977e82810873bf6d1c04a46c0c1d17987b9f5b43abc606b5c8f}"
+WHEEL_URL="${ATOMY_TOOLKIT_WHEEL_URL:-https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.7.0/atomy_toolkit_lib-0.7.0-py3-none-any.whl}"
+WHEEL_SHA256="${ATOMY_TOOLKIT_WHEEL_SHA256:-de79d9d6d85ac9044b005117e42f0f0c3c21a9b92e972508d544ce1e55d3de11}"
 INSTALL_ROOT="${ATOMY_TOOLKIT_INSTALL_ROOT:-$HOME/atomy-toolkit}"
 CODING_TOOL="${ATOMY_TOOLKIT_CODING_TOOL:-codex}"
 IDE_TOOL="${ATOMY_TOOLKIT_IDE_TOOL:-skip}"
