@@ -1,28 +1,31 @@
-# Atomy Toolkit 0.7.0 설치 안내
+# Atomy Toolkit 0.8.0 설치 안내
 
 이 안내와 설치 파일은 `release-manifest.json`에서 함께 생성했습니다.
-Python 3.12 이상 또는 미리 설치한 uv가 필요합니다.
+Python 3.12 이상이 없어도 됩니다. Python 3.12 이상도 uv도 없으면 설치 파일이 묻지 않고
+판을 고정한 uv를 받아 확인값을 대조한 뒤, 그 uv로 Python 3.12를 사용자 폴더에 마련합니다.
+관리자 권한은 필요 없고 원래 있던 Python은 건드리지 않습니다. 받은 것과 판은 화면에 한 줄씩 남습니다.
+받지 않게 하려면 `ATOMY_TOOLKIT_NO_UV=1`을 설정하고 Python 3.12 이상을 직접 설치하세요.
 설치 파일을 내려받고 내용이 일치하는지 확인한 뒤 실행하세요.
 
 ## Linux
 
 ```sh
-curl -fL -o install-cli.sh 'https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.7.0/install-cli.sh'
-echo 'd3e9e78a644d4a90ee43fe93027565c03517eaff350d48f8671942dee7c8f3b9  install-cli.sh' | sha256sum -c - && sh ./install-cli.sh
+curl -fL -o install-cli.sh 'https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.8.0/install-cli.sh'
+echo 'a21641f18879f0160d8153381d61b1f5d961f6034127b25d29420da0828ddccb  install-cli.sh' | sha256sum -c - && sh ./install-cli.sh
 ```
 
 ## macOS
 
 ```sh
-curl -fL -o install-cli.sh 'https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.7.0/install-cli.sh'
-echo 'd3e9e78a644d4a90ee43fe93027565c03517eaff350d48f8671942dee7c8f3b9  install-cli.sh' | shasum -a 256 -c - && sh ./install-cli.sh
+curl -fL -o install-cli.sh 'https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.8.0/install-cli.sh'
+echo 'a21641f18879f0160d8153381d61b1f5d961f6034127b25d29420da0828ddccb  install-cli.sh' | shasum -a 256 -c - && sh ./install-cli.sh
 ```
 
 ## Windows PowerShell
 
 ```powershell
-Invoke-WebRequest -Uri 'https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.7.0/install-cli.ps1' -OutFile install-cli.ps1
-if ((Get-FileHash ./install-cli.ps1 -Algorithm SHA256).Hash.ToLowerInvariant() -ne 'f7802499c1f077bc3f7c83bf5fcb054c9ba7e40cf8970da1f6c3655156200a94') { throw '설치 파일 내용이 다릅니다.' }
+Invoke-WebRequest -Uri 'https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.8.0/install-cli.ps1' -OutFile install-cli.ps1
+if ((Get-FileHash ./install-cli.ps1 -Algorithm SHA256).Hash.ToLowerInvariant() -ne '5bc0e0d579c5363cf311e8601f5f5fb6a5815cf03fb9b71e0e8fe542884b8072') { throw '설치 파일 내용이 다릅니다.' }
 & ./install-cli.ps1
 ```
 
@@ -49,10 +52,10 @@ VS Code 자동 등록은 지원하지 않습니다. 미지원 선택은 설치 �
 
 ## 이번 배포 파일
 
-- 버전: `0.7.0`
-- 파일: `atomy_toolkit_lib-0.7.0-py3-none-any.whl`
-- 주소: https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.7.0/atomy_toolkit_lib-0.7.0-py3-none-any.whl
-- 내용 확인값(SHA256): `de79d9d6d85ac9044b005117e42f0f0c3c21a9b92e972508d544ce1e55d3de11`
+- 버전: `0.8.0`
+- 파일: `atomy_toolkit_lib-0.8.0-py3-none-any.whl`
+- 주소: https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.8.0/atomy_toolkit_lib-0.8.0-py3-none-any.whl
+- 내용 확인값(SHA256): `b80af6110cc45b3e1f844e38f22edd870a008bdd2480a8cb93c4abe4cb857819`
 - 설치 파일의 확인값과 앱 선택 목록: `release-manifest.json`
 
 공개 저장소의 README·상세 안내·루트 설치 파일을 갱신할 때는 같은 배포의

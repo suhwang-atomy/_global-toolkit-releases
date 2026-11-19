@@ -3,8 +3,8 @@ set -eu
 
 # Inputs: env override wins, else the values baked in at release time by
 # `atomy-toolkit package bootstrap` (which replaces the __WHEEL_*__ tokens).
-WHEEL_URL="${ATOMY_TOOLKIT_WHEEL_URL:-https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.7.0/atomy_toolkit_lib-0.7.0-py3-none-any.whl}"
-WHEEL_SHA256="${ATOMY_TOOLKIT_WHEEL_SHA256:-de79d9d6d85ac9044b005117e42f0f0c3c21a9b92e972508d544ce1e55d3de11}"
+WHEEL_URL="${ATOMY_TOOLKIT_WHEEL_URL:-https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.8.0/atomy_toolkit_lib-0.8.0-py3-none-any.whl}"
+WHEEL_SHA256="${ATOMY_TOOLKIT_WHEEL_SHA256:-b80af6110cc45b3e1f844e38f22edd870a008bdd2480a8cb93c4abe4cb857819}"
 INSTALL_ROOT="${ATOMY_TOOLKIT_INSTALL_ROOT:-$HOME/atomy-toolkit}"
 CODING_TOOL="${ATOMY_TOOLKIT_CODING_TOOL:-codex}"
 IDE_TOOL="${ATOMY_TOOLKIT_IDE_TOOL:-skip}"
@@ -53,6 +53,77 @@ python_install_help() {
   echo "Then ensure uv is on PATH or set ATOMY_TOOLKIT_UV_BIN, and rerun this installer." >&2
 }
 
+# --- Python 3.12+ 도 uv 도 없으면 묻지 않고 uv 를 받는다 (D-108, 2026-11-18 소유자 결정). ---
+# 판을 고정하고, 받은 파일을 아래 확인값과 대조한 뒤에만 실행한다. 설치 스크립트를 받아 바로 실행하지
+# 않는다(0.4.0 의 거부가 막던 것). 관리자 권한 없이 사용자 폴더(~/.local/bin)에 둔다 — 차단 훅이 그 자리를
+# 직접 본다. 판·확인값을 바꿀 때는 install-cli.ps1 과 함께 바꾼다(시험이 두 파일을 대조한다).
+UV_VERSION="0.13.7"
+UV_HOME_BIN="$HOME/.local/bin/uv"
+
+uv_target() {
+  case "$(uname -s 2>/dev/null)-$(uname -m 2>/dev/null)" in
+    Darwin-arm64 | Darwin-aarch64) echo "aarch64-apple-darwin" ;;
+    Darwin-x86_64) echo "x86_64-apple-darwin" ;;
+    Linux-x86_64 | Linux-amd64) echo "x86_64-unknown-linux-gnu" ;;
+    Linux-aarch64 | Linux-arm64) echo "aarch64-unknown-linux-gnu" ;;
+    *) echo "" ;;
+  esac
+}
+
+uv_expected_sha() {
+  case "$1" in
+    aarch64-apple-darwin) echo "81b811b57e4624df7ed3aac148e0359100d9962f3d9dce00aec533dc2e086731" ;;
+    x86_64-apple-darwin) echo "20c47e4c1f630b8abaff8c291fa9b9aa300fef92c4fbff95adf198b55287cda7" ;;
+    x86_64-unknown-linux-gnu) echo "c5221ff41b7892bfc223543883600125f6a47fe845093e0f5bdff4f359196d83" ;;
+    aarch64-unknown-linux-gnu) echo "71279f8d3c67241e807b9d8db872d1bf541579fb9f08b7d1eb1682196d1e57dc" ;;
+    *) echo "" ;;
+  esac
+}
+
+sha256_of() {
+  if command -v shasum >/dev/null 2>&1; then shasum -a 256 "$1" | awk '{print $1}'
+  elif command -v sha256sum >/dev/null 2>&1; then sha256sum "$1" | awk '{print $1}'
+  else echo ""; fi
+}
+
+uv_fail() {
+  echo "ERROR: $1" >&2
+  echo "Python 3.12 이상과 uv 가 없어 uv 를 자동으로 받으려 했지만 못 했습니다: $1" >&2
+  echo "다음에 할 일: 아래 안내대로 Python 3.12 이상을 직접 설치한 뒤 이 설치 명령을 다시 실행하세요." >&2
+  python_install_help
+  exit 1
+}
+
+fetch_uv() {
+  target="$(uv_target)"
+  [ -n "$target" ] || uv_fail "this computer type ($(uname -s 2>/dev/null)-$(uname -m 2>/dev/null)) has no pinned uv checksum"
+  expected="${ATOMY_TOOLKIT_UV_SHA256:-$(uv_expected_sha "$target")}"
+  if [ -n "${ATOMY_TOOLKIT_UV_SHA256:-}" ] || [ -n "${ATOMY_TOOLKIT_UV_DOWNLOAD_BASE:-}" ]; then
+    echo "WARNING: 설정값으로 uv 확인값 또는 받는 주소를 바꿨습니다 (ATOMY_TOOLKIT_UV_SHA256 / ATOMY_TOOLKIT_UV_DOWNLOAD_BASE)." >&2
+  fi
+  base="${ATOMY_TOOLKIT_UV_DOWNLOAD_BASE:-https://github.com/astral-sh/uv/releases/download/$UV_VERSION}"
+  archive="$TMP/uv-$target.tar.gz"
+  command -v curl >/dev/null 2>&1 || uv_fail "curl is not available to download uv"
+  echo "Python 3.12 이상과 uv 가 없어 uv $UV_VERSION ($target) 을 받습니다: $base/uv-$target.tar.gz" >&2
+  echo "  관리자 권한 없이 $UV_HOME_BIN 에 둡니다. 원래 있던 Python 은 건드리지 않습니다." >&2
+  if ! curl -fsSL --connect-timeout 20 --max-time 600 -o "$archive" "$base/uv-$target.tar.gz"; then
+    rm -f "$archive"
+    uv_fail "uv download failed (network or company firewall may be blocking github.com)"
+  fi
+  actual="$(sha256_of "$archive")"
+  if [ -z "$actual" ] || [ "$actual" != "$expected" ]; then
+    rm -f "$archive"
+    uv_fail "uv SHA256 mismatch. expected=$expected actual=${actual:-unavailable}"
+  fi
+  mkdir -p "$TMP/uv-extract" "$HOME/.local/bin"
+  tar -xzf "$archive" -C "$TMP/uv-extract" || uv_fail "could not unpack the uv archive"
+  [ -f "$TMP/uv-extract/uv-$target/uv" ] || uv_fail "uv archive has an unexpected layout"
+  cp "$TMP/uv-extract/uv-$target/uv" "$UV_HOME_BIN.tmp.$$"
+  chmod 755 "$UV_HOME_BIN.tmp.$$"
+  mv -f "$UV_HOME_BIN.tmp.$$" "$UV_HOME_BIN"
+  echo "받음: uv $UV_VERSION ($target, 확인값 일치) → $UV_HOME_BIN" >&2
+}
+
 if [ "${ATOMY_TOOLKIT_FORCE_UV:-0}" != "1" ]; then
   for cand in "${PYTHON:-}" python3 python; do
     if py_ok "$cand"; then BASE_PY="$(command -v "$cand")"; break; fi
@@ -69,15 +140,23 @@ else
     exit 1
   fi
   UV="${ATOMY_TOOLKIT_UV_BIN:-$(command -v uv 2>/dev/null || true)}"
+  if [ -z "$UV" ] && [ -x "$UV_HOME_BIN" ]; then
+    UV="$UV_HOME_BIN"
+    echo "이미 받아 둔 uv 를 씁니다: $UV ($("$UV" --version 2>/dev/null || echo "판 확인 불가"))" >&2
+  fi
   if [ -z "$UV" ]; then
-    echo "ERROR: Python 3.12+ not found and uv is not installed; refusing unverified automatic provisioning." >&2
-    python_install_help
-    exit 1
+    if [ "${ATOMY_TOOLKIT_DRY_RUN:-0}" = "1" ]; then
+      echo "dry-run ok (python missing; would download uv $UV_VERSION to $UV_HOME_BIN)"
+      exit 0
+    fi
+    fetch_uv
+    UV="$UV_HOME_BIN"
   fi
   echo "Provisioning Python 3.12 via uv (venv: $VENV_DIR)..." >&2
   "$UV" venv --python 3.12 "$VENV_DIR"
   RUN_PY="$VENV_DIR/bin/python"
   USE_UV=1
+  echo "마련함: Python $("$RUN_PY" -c 'import platform; print(platform.python_version())' 2>/dev/null || echo '?') (uv 가 받아 사용자 폴더에 둠, $("$UV" --version 2>/dev/null || echo uv))" >&2
 fi
 
 # --- Download the wheel (preserve its real PEP 427 filename) + verify SHA256. ---

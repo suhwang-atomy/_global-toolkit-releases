@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "version": "0.7.0",
-  "base_url": "https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.7.0",
+  "version": "0.8.0",
+  "base_url": "https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.8.0",
   "wheel": {
-    "filename": "atomy_toolkit_lib-0.7.0-py3-none-any.whl",
-    "url": "https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.7.0/atomy_toolkit_lib-0.7.0-py3-none-any.whl",
-    "sha256": "de79d9d6d85ac9044b005117e42f0f0c3c21a9b92e972508d544ce1e55d3de11",
+    "filename": "atomy_toolkit_lib-0.8.0-py3-none-any.whl",
+    "url": "https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.8.0/atomy_toolkit_lib-0.8.0-py3-none-any.whl",
+    "sha256": "b80af6110cc45b3e1f844e38f22edd870a008bdd2480a8cb93c4abe4cb857819",
     "extras": [
       "mcp"
     ]
@@ -22,12 +22,12 @@
   },
   "scripts": {
     "install-cli.sh": {
-      "url": "https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.7.0/install-cli.sh",
-      "sha256": "d3e9e78a644d4a90ee43fe93027565c03517eaff350d48f8671942dee7c8f3b9"
+      "url": "https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.8.0/install-cli.sh",
+      "sha256": "a21641f18879f0160d8153381d61b1f5d961f6034127b25d29420da0828ddccb"
     },
     "install-cli.ps1": {
-      "url": "https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.7.0/install-cli.ps1",
-      "sha256": "f7802499c1f077bc3f7c83bf5fcb054c9ba7e40cf8970da1f6c3655156200a94"
+      "url": "https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.8.0/install-cli.ps1",
+      "sha256": "5bc0e0d579c5363cf311e8601f5f5fb6a5815cf03fb9b71e0e8fe542884b8072"
     }
   }
 }

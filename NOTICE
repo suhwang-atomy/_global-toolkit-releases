@@ -30,6 +30,28 @@ It is not installed by default and no graphify source is vendored here; the
 extra declares a PyPI requirement only. `/plandoc` degrades to a stdlib-`ast`
 lite mode when it is absent.
 
+Downloaded at install time (not bundled)
+----------------------------------------
+
+When neither Python 3.12+ nor uv is present, `install-cli.sh` / `install-cli.ps1`
+download a pinned uv release and verify its SHA256 before running it. uv then
+downloads a CPython build. Neither is vendored in this repository or in the
+toolkit wheel; both come straight from their upstream release sites.
+
+  uv 0.13.7  (https://github.com/astral-sh/uv)
+  Copyright (c) Astral Software Inc.
+  Licensed under either of the Apache License 2.0 or the MIT License.
+
+  CPython distributions built by python-build-standalone
+  (https://github.com/astral-sh/python-build-standalone)
+  CPython is licensed under the PSF License Agreement. Each distribution
+  archive ships the license texts of CPython and its bundled components;
+  the project builds against libedit and disables `_gdbm` to avoid GPL
+  components. The python-build-standalone build tooling itself is licensed
+  under the Mozilla Public License 2.0.
+
+Set ATOMY_TOOLKIT_NO_UV=1 to stop the installer from downloading anything.
+
 MIT License (addyosmani/agent-skills)
 -------------------------------------
 

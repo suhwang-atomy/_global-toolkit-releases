@@ -2,8 +2,8 @@
 
 # Inputs: env override wins, else the values baked in at release time by
 # `atomy-toolkit package bootstrap` (which replaces the __WHEEL_*__ tokens).
-$WheelUrl = $env:ATOMY_TOOLKIT_WHEEL_URL; if (-not $WheelUrl) { $WheelUrl = "https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.7.0/atomy_toolkit_lib-0.7.0-py3-none-any.whl" }
-$WheelSha = $env:ATOMY_TOOLKIT_WHEEL_SHA256; if (-not $WheelSha) { $WheelSha = "de79d9d6d85ac9044b005117e42f0f0c3c21a9b92e972508d544ce1e55d3de11" }
+$WheelUrl = $env:ATOMY_TOOLKIT_WHEEL_URL; if (-not $WheelUrl) { $WheelUrl = "https://github.com/suhwang-atomy/_global-toolkit-releases/releases/download/v0.8.0/atomy_toolkit_lib-0.8.0-py3-none-any.whl" }
+$WheelSha = $env:ATOMY_TOOLKIT_WHEEL_SHA256; if (-not $WheelSha) { $WheelSha = "b80af6110cc45b3e1f844e38f22edd870a008bdd2480a8cb93c4abe4cb857819" }
 $Root = if ($env:ATOMY_TOOLKIT_INSTALL_ROOT) { $env:ATOMY_TOOLKIT_INSTALL_ROOT } else { Join-Path $HOME "atomy-toolkit" }
 $CodingTool = if ($env:ATOMY_TOOLKIT_CODING_TOOL) { $env:ATOMY_TOOLKIT_CODING_TOOL } else { "codex" }
 $IdeTool = if ($env:ATOMY_TOOLKIT_IDE_TOOL) { $env:ATOMY_TOOLKIT_IDE_TOOL } else { "skip" }
@@ -53,6 +53,82 @@ $useUv = $false
 $uv = $null
 $pythonInstallHelp = "Install Python 3.12+ from https://www.python.org/downloads/. Alternatively, install uv separately using its official instructions at https://docs.astral.sh/uv/getting-started/installation/, then ensure uv is on PATH or set ATOMY_TOOLKIT_UV_BIN and rerun this installer."
 
+# --- Python 3.12+ 도 uv 도 없으면 묻지 않고 uv 를 받는다 (D-108, 2026-11-18 소유자 결정). ---
+# 판을 고정하고, 받은 파일을 아래 확인값과 대조한 뒤에만 실행한다. 설치 스크립트를 받아 바로 실행하지
+# 않는다(0.4.0 의 거부가 막던 것). 관리자 권한 없이 사용자 폴더(~\.local\bin)에 둔다 — 차단 훅이 그 자리를
+# 직접 본다. 판·확인값을 바꿀 때는 install-cli.sh 와 함께 바꾼다(시험이 두 파일을 대조한다).
+$UvVersion = "0.13.7"
+$UvHomeBin = Join-Path (Join-Path (Join-Path $HOME ".local") "bin") "uv.exe"
+$UvPinnedSha = @{
+  "x86_64-pc-windows-msvc" = "0cdc5b38fe5a8168ed6a25814f5ba43c21d313dd3187314fccb37b7cec46e021"
+  "aarch64-pc-windows-msvc" = "505d9e65e7692bac3ddf98c66754aa26c5050c409c184af30a881a0a72cc85e3"
+}
+
+function Get-UvTarget {
+  $arch = $null
+  try { $arch = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString() } catch { $arch = $null }
+  if (-not $arch) { $arch = if ($env:PROCESSOR_ARCHITEW6432) { $env:PROCESSOR_ARCHITEW6432 } else { $env:PROCESSOR_ARCHITECTURE } }
+  switch -Regex ("$arch") {
+    '^(X64|AMD64)$' { return "x86_64-pc-windows-msvc" }
+    '^(Arm64|ARM64)$' { return "aarch64-pc-windows-msvc" }
+    default { return "" }
+  }
+}
+
+function Stop-UvFetch([string]$reason) {
+  Write-Host "Python 3.12 이상과 uv 가 없어 uv 를 자동으로 받으려 했지만 못 했습니다: $reason"
+  Write-Host "다음에 할 일: 아래 안내대로 Python 3.12 이상을 직접 설치한 뒤 이 설치 명령을 다시 실행하세요."
+  throw "$reason $pythonInstallHelp"
+}
+
+function Get-PinnedUv {
+  $target = Get-UvTarget
+  if (-not $target) { Stop-UvFetch "this computer type has no pinned uv checksum" }
+  $expected = if ($env:ATOMY_TOOLKIT_UV_SHA256) { $env:ATOMY_TOOLKIT_UV_SHA256 } else { $UvPinnedSha[$target] }
+  $base = if ($env:ATOMY_TOOLKIT_UV_DOWNLOAD_BASE) { $env:ATOMY_TOOLKIT_UV_DOWNLOAD_BASE.TrimEnd("/") } else { "https://github.com/astral-sh/uv/releases/download/$UvVersion" }
+  $url = "$base/uv-$target.zip"
+  if ($env:ATOMY_TOOLKIT_UV_SHA256 -or $env:ATOMY_TOOLKIT_UV_DOWNLOAD_BASE) {
+    Write-Host "WARNING: 설정값으로 uv 확인값 또는 받는 주소를 바꿨습니다 (ATOMY_TOOLKIT_UV_SHA256 / ATOMY_TOOLKIT_UV_DOWNLOAD_BASE)."
+  }
+  $tmpRoot = if ($env:TEMP) { $env:TEMP } else { [System.IO.Path]::GetTempPath() }
+  $work = New-Item -ItemType Directory -Path (Join-Path $tmpRoot ("uv-" + [guid]::NewGuid()))
+  try {
+    $archive = Join-Path $work "uv-$target.zip"
+    Write-Host "Python 3.12 이상과 uv 가 없어 uv $UvVersion ($target) 을 받습니다: $url"
+    Write-Host "  관리자 권한 없이 $UvHomeBin 에 둡니다. 원래 있던 Python 은 건드리지 않습니다."
+    try {
+      if ($url.StartsWith("file://")) {
+        Copy-Item -LiteralPath ([Uri]$url).LocalPath -Destination $archive
+      } else {
+        [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
+        Invoke-WebRequest -Uri $url -OutFile $archive -UseBasicParsing -TimeoutSec 600
+      }
+    } catch {
+      Stop-UvFetch "uv download failed (network or company firewall may be blocking github.com)"
+    }
+    $actual = (Get-FileHash $archive -Algorithm SHA256).Hash.ToLowerInvariant()
+    if ($actual -ne "$expected".ToLowerInvariant()) {
+      Stop-UvFetch "uv SHA256 mismatch. expected=$expected actual=$actual"
+    }
+    $unpacked = Join-Path $work "unpacked"
+    Expand-Archive -LiteralPath $archive -DestinationPath $unpacked -Force
+    $exe = Join-Path $unpacked "uv.exe"
+    if (-not (Test-Path -LiteralPath $exe -PathType Leaf)) { Stop-UvFetch "uv archive has an unexpected layout" }
+    $binDir = Split-Path -Parent $UvHomeBin
+    New-Item -ItemType Directory -Force -Path $binDir | Out-Null
+    $staged = "$UvHomeBin.tmp.$PID"
+    Copy-Item -LiteralPath $exe -Destination $staged -Force
+    Move-Item -LiteralPath $staged -Destination $UvHomeBin -Force
+    Write-Host "받음: uv $UvVersion ($target, 확인값 일치) → $UvHomeBin"
+  } finally {
+    Remove-Item -LiteralPath $work -Recurse -Force -ErrorAction SilentlyContinue
+  }
+}
+
+# ARM 기기의 Windows 에서는 툴킷 부품 일부(cryptography)의 ARM 용 완성본이 없어 원본 빌드를 시도하다 실패한다
+# (2026-11-19 Parallels 실측). uv 에게 x64 Python 을 받게 한다 — ARM Windows 는 x64 를 에뮬레이션으로 돌린다.
+$UvPythonRequest = if ((Get-UvTarget) -eq "aarch64-pc-windows-msvc") { "cpython-3.12-windows-x86_64-none" } else { "3.12" }
+
 if ($env:ATOMY_TOOLKIT_FORCE_UV -ne "1") {
   foreach ($cand in @($env:PYTHON, "python", "python3")) {
     if (Test-PyOk $cand) { $basePy = (Get-Command $cand).Source; break }
@@ -67,8 +143,18 @@ if ($basePy) {
     throw "Python 3.12+ not found and uv provisioning is disabled. $pythonInstallHelp"
   }
   $uv = if ($env:ATOMY_TOOLKIT_UV_BIN) { $env:ATOMY_TOOLKIT_UV_BIN } else { (Get-Command uv -ErrorAction SilentlyContinue).Source }
+  if (-not $uv -and (Test-Path -LiteralPath $UvHomeBin -PathType Leaf)) {
+    $uv = $UvHomeBin
+    $reusedVersion = try { (& $uv --version 2>$null) } catch { "판 확인 불가" }
+    Write-Host "이미 받아 둔 uv 를 씁니다: $uv ($reusedVersion)"
+  }
   if (-not $uv) {
-    throw "Python 3.12+ not found and uv is not installed; refusing unverified automatic provisioning. $pythonInstallHelp"
+    if ($env:ATOMY_TOOLKIT_DRY_RUN -eq "1") {
+      Write-Host "dry-run ok (python missing; would download uv $UvVersion to $UvHomeBin)"
+      exit 0
+    }
+    Get-PinnedUv
+    $uv = $UvHomeBin
   }
   $useUv = $true
 }
@@ -82,8 +168,12 @@ try {
     $helperDir = Join-Path $tmp "python"
     Invoke-NativeChecked `
       -Executable $uv `
-      -ArgumentList @("venv", "--python", "3.12", $helperDir) `
+      -ArgumentList @("venv", "--python", $UvPythonRequest, $helperDir) `
       -FailureMessage "failed to create isolated venv with uv"
+    $helperPy = Join-Path $helperDir "Scripts\python.exe"
+    $pyVersion = try { (& $helperPy -c "import platform; print(platform.python_version())" 2>$null) } catch { "?" }
+    $uvVersionLine = try { (& $uv --version 2>$null) } catch { "uv" }
+    Write-Host "마련함: Python $pyVersion (uv 가 받아 사용자 폴더에 둠, $uvVersionLine)"
   }
   $wheelName = Split-Path -Leaf (([Uri]$WheelUrl).LocalPath)
   $wheel = Join-Path $tmp $wheelName
@@ -114,7 +204,7 @@ try {
   if ($useUv) {
     Invoke-NativeChecked `
       -Executable $uv `
-      -ArgumentList @("venv", "--python", "3.12", $venvDir) `
+      -ArgumentList @("venv", "--python", $UvPythonRequest, $venvDir) `
       -FailureMessage "failed to create isolated venv with uv"
     Invoke-NativeChecked `
       -Executable $uv `
